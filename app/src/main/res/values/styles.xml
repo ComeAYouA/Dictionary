@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NewEditTextStyle"  parent="Base.Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edit_text_new</item>
+        <item name="android:padding">10dp</item>
+    </style>
+</resources>

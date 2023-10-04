@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.lithium.kotlin.dictionary.WordViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/word_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:orientation="horizontal"
+        android:background="@drawable/edit_text_new">
+
+        <ImageView
+            android:id="@+id/word_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/word_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="@{viewModel.sequence}" />
+
+            <TextView
+                android:id="@+id/translation_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="@{viewModel.translation}" />
+
+            <ProgressBar
+                android:id="@+id/word_progress_text_view"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
