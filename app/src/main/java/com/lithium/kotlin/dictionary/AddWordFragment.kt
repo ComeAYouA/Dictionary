@@ -27,12 +27,13 @@ private const val PICK_IMAGE_AVATAR = 0
 class AddWordFragment: Fragment() {
 
     interface CallBacks{
-        fun onAddWordButtonClicked(word:Word)
+        fun onAddWordButtonClicked()
     }
 
     private var callBacks: CallBacks? = null
     private lateinit var iconView: ImageButton
     private var iconPath = ""
+    private val editViewModel = EditDictionaryViewModel()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -99,14 +100,15 @@ class AddWordFragment: Fragment() {
         }
         view.apply {
             addButton.setOnClickListener {
-                callBacks?.onAddWordButtonClicked(
+                editViewModel.addWord(
                     Word(
-                        sequence = wordEditText.text.toString(),
-                        translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
-                        categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
-                        photoFilePath = iconPath
+                    sequence = wordEditText.text.toString(),
+                    translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
+                    categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
+                    photoFilePath = iconPath
                     )
                 )
+                callBacks?.onAddWordButtonClicked()
             }
         }
         iconView = view.newWordIcon

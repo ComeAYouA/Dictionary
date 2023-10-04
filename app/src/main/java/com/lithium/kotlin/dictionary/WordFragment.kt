@@ -28,12 +28,11 @@ private const val Arg_Word_Id = "word_id"
 open class EditWordFragment: Fragment() {
 
     interface CallBacks{
-        fun onEditWordButtonClicked(word:Word)
+        fun onEditWordButtonClicked()
     }
 
-    private val repository = WordsRepository.get()
+    private val editViewModel = EditDictionaryViewModel()
 
-    private lateinit var word: LiveData<Word?>
     private lateinit var wordEditText: EditText
     private lateinit var translationRecyclerView: RecyclerView
     private lateinit var categoriesRecyclerView: RecyclerView
@@ -46,7 +45,7 @@ open class EditWordFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         callBacks = context as CallBacks?
-        word = repository.getWord(arguments?.getSerializable(Arg_Word_Id) as UUID)
+        editViewModel.loadWord(arguments?.getSerializable(Arg_Word_Id) as UUID)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -126,7 +125,7 @@ open class EditWordFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        word.observe(
+        editViewModel.wordLiveData.observe(
             viewLifecycleOwner
         ) { word ->
             word?.let { word: Word ->
@@ -141,12 +140,13 @@ open class EditWordFragment: Fragment() {
                     Picasso.with(context).load(R.drawable.ic_empty_picture).into(iconView)
                 }
                 editButton.setOnClickListener {
-                    callBacks?.onEditWordButtonClicked(word.copy(
+                    editViewModel.saveWord(word.copy(
                         sequence = wordEditText.text.toString(),
                         translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
                         categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
                         photoFilePath = iconPath
                     ))
+                    callBacks?.onEditWordButtonClicked()
                 }
             }
         }

@@ -12,8 +12,6 @@ import com.lithium.kotlin.dictionary.databinding.ActivityMainBinding
 import java.util.*
 
 class MainActivity : AppCompatActivity(), AddWordFragment.CallBacks, DictionaryFragment.CallBacks, EditWordFragment.CallBacks {
-
-    private val repository = WordsRepository.get()
     private lateinit var bottomNavigationBar: NavigationBarView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,14 +49,12 @@ class MainActivity : AppCompatActivity(), AddWordFragment.CallBacks, DictionaryF
     override fun onWordClicked(wordId: UUID) {
         openFragment(EditWordFragment.newInstance(wordId))
     }
-    override fun onAddWordButtonClicked(word: Word) {
-        repository.addWord(word)
+    override fun onAddWordButtonClicked() {
         openFragment(DictionaryFragment())
         bottomNavigationBar.selectedItemId = R.id.menu_dictionary
     }
 
-    override fun onEditWordButtonClicked(word: Word) {
-        repository.updateWord(word)
+    override fun onEditWordButtonClicked() {
         openFragment(DictionaryFragment())
     }
 

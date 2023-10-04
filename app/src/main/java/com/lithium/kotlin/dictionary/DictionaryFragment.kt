@@ -3,22 +3,17 @@ package com.lithium.kotlin.dictionary
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
-import com.squareup.picasso.Picasso
-import java.net.URL
 import java.util.*
 
 
@@ -30,8 +25,7 @@ class DictionaryFragment: Fragment() {
     interface CallBacks{
         fun onWordClicked(wordId: UUID)
     }
-
-    private val repository = WordsRepository.get()
+    private val viewModel = DictionaryViewModel()
     private var callBacks: CallBacks? = null
 
     override fun onAttach(context: Context) {
@@ -39,6 +33,7 @@ class DictionaryFragment: Fragment() {
 
         callBacks = context as CallBacks?
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,9 +51,9 @@ class DictionaryFragment: Fragment() {
             false
         )
 
-        view.dictionaryRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            repository.getWords().observe(viewLifecycleOwner){
+        viewModel.wordsLiveData.observe(viewLifecycleOwner){
+            view.dictionaryRecyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
                 adapter = WordAdapter(it)
             }
         }

@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/GitProjects/Dictionary/app/src/main/res/layout/fragment_dictionary.xml" value="0.1956521739130435" />
+        <entry key="..\:/GitProjects/Dictionary/app/src/main/res/layout/fragment_word.xml" value="0.1956521739130435" />
+        <entry key="..\:/GitProjects/Dictionary/app/src/main/res/layout/list_item_category.xml" value="0.1956521739130435" />
+        <entry key="..\:/GitProjects/Dictionary/app/src/main/res/layout/list_item_word.xml" value="0.1956521739130435" />
         <entry key="..\:/Projects/AS_Projects/Dictionary/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.175" />
         <entry key="..\:/Projects/AS_Projects/Dictionary/app/src/main/res/drawable/button_navigation_add.xml" value="0.175" />
         <entry key="..\:/Projects/AS_Projects/Dictionary/app/src/main/res/drawable/edit_text_new.xml" value="0.175" />
