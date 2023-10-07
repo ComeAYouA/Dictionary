@@ -2,11 +2,9 @@ package com.lithium.kotlin.dictionary
 
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.telecom.Call
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +12,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lithium.kotlin.dictionary.view_models.EditDictionaryViewModel
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -32,13 +30,9 @@ open class EditWordFragment: Fragment() {
     }
 
     private val editViewModel = EditDictionaryViewModel()
+    private lateinit var binding : FragmentWordBinding
 
-    private lateinit var wordEditText: EditText
-    private lateinit var translationRecyclerView: RecyclerView
-    private lateinit var categoriesRecyclerView: RecyclerView
-    private lateinit var iconView: ImageButton
     private lateinit var iconPath: String
-    private lateinit var editButton: Button
     private var callBacks: CallBacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,12 +52,11 @@ open class EditWordFragment: Fragment() {
             container,
             false
         )
-        this.translationRecyclerView = view.translationRecyclerView
-        translationRecyclerView.apply {
+        binding = view
+        view.translationRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
-        this.categoriesRecyclerView = view.categoriesRecyclerView
-        categoriesRecyclerView.apply {
+        view.categoriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
@@ -106,9 +99,7 @@ open class EditWordFragment: Fragment() {
                 }
             }
         }
-
-        iconView = view.newWordIcon
-        iconView.setOnClickListener{
+        view.newWordIcon.setOnClickListener{
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_PICK
@@ -117,36 +108,38 @@ open class EditWordFragment: Fragment() {
                 PICK_IMAGE_AVATAR
             )
         }
-
-        editButton = view.addButton
-        wordEditText = view.wordEditText
         return view.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         editViewModel.wordLiveData.observe(
             viewLifecycleOwner
         ) { word ->
             word?.let { word: Word ->
-                wordEditText.setText(word.sequence)
-                translationRecyclerView.adapter = DeletableItemAdapter(word.translation)
-                categoriesRecyclerView.adapter = DeletableItemAdapter(word.categories)
-                iconPath = word.photoFilePath
 
-                if(iconPath != ""){
-                    Picasso.with(context).load(File(iconPath)).into(iconView)
-                }else{
-                    Picasso.with(context).load(R.drawable.ic_empty_picture).into(iconView)
-                }
-                editButton.setOnClickListener {
-                    editViewModel.saveWord(word.copy(
-                        sequence = wordEditText.text.toString(),
-                        translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
-                        categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
-                        photoFilePath = iconPath
-                    ))
-                    callBacks?.onEditWordButtonClicked()
+                binding.apply {
+                    wordEditText.setText(word.sequence)
+                    translationRecyclerView.adapter = DeletableItemAdapter(word.translation)
+                    categoriesRecyclerView.adapter = DeletableItemAdapter(word.categories)
+
+                    iconPath = word.photoFilePath
+
+                    if(iconPath != ""){
+                        Picasso.with(context).load(File(iconPath)).into(newWordIcon)
+                    }else{
+                        Picasso.with(context).load(R.drawable.ic_empty_picture).into(newWordIcon)
+                    }
+                    addButton.setOnClickListener {
+                        editViewModel.saveWord(word.copy(
+                            sequence = wordEditText.text.toString(),
+                            translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
+                            categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
+                            photoFilePath = iconPath
+                        ))
+                        callBacks?.onEditWordButtonClicked()
+                    }
                 }
             }
         }
@@ -213,7 +206,7 @@ open class EditWordFragment: Fragment() {
                     }
                 )
                 iconPath = path
-                Picasso.with(requireContext()).load(File(iconPath)).into(iconView)
+                Picasso.with(requireContext()).load(File(iconPath)).into(binding.newWordIcon)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
+import com.lithium.kotlin.dictionary.view_models.DictionaryViewModel
+import com.lithium.kotlin.dictionary.view_models.WordViewModel
+
 import java.util.*
 
 

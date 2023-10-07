@@ -18,8 +18,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lithium.kotlin.dictionary.view_models.EditDictionaryViewModel
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
-import java.util.*
 
 
 private const val  TAG = "WordFragment"
@@ -98,6 +98,7 @@ class AddWordFragment: Fragment() {
                 }
             }
         }
+
         view.apply {
             addButton.setOnClickListener {
                 editViewModel.addWord(
