@@ -15,6 +15,7 @@ class CategoriesFragment: Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private val repository = WordsRepository.get()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,20 +23,19 @@ class CategoriesFragment: Fragment() {
     ): View? {
         val view  = inflater.inflate(R.layout.fragment_categories, container, false)
         recyclerView = view.findViewById(R.id.categories_RV) as RecyclerView
-
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         return view
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        repository.getCategories().observe(
-//            viewLifecycleOwner
-//        ){ category ->
-//            recyclerView.apply {
-//                adapter = CategoryAdapter(category)
-//                layoutManager = GridLayoutManager(requireContext(), 3)
-//            }
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        repository.getCategories().observe(
+            viewLifecycleOwner
+        ){ categories ->
+            recyclerView.apply {
+                adapter = CategoryAdapter(categories)
+            }
+        }
+    }
 
     private inner class CategoryHolder(val item: View) : RecyclerView.ViewHolder(item){
 
@@ -48,7 +48,7 @@ class CategoriesFragment: Fragment() {
         override fun getItemCount(): Int = categories.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
-            val view = layoutInflater.inflate(R.layout.fragment_categories, parent, false)
+            val view = layoutInflater.inflate(R.layout.list_item_category, parent, false)
             return CategoryHolder(
                 view
             )
@@ -56,7 +56,7 @@ class CategoriesFragment: Fragment() {
 
         override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
             val category = categories[position]
-            holder.bind(category.toString())
+            holder.bind(category.name)
         }
     }
 }

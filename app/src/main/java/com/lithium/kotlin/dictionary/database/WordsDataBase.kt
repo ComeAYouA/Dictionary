@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 import com.lithium.kotlin.dictionary.Category
 import com.lithium.kotlin.dictionary.Word
 
-@Database(entities = [ Word::class], version = 1)
+@Database(entities = [ Word::class, Category::class], version = 1)
 @TypeConverters(WordTypeConverters::class)
 
 abstract class WordsDataBase: RoomDatabase() {

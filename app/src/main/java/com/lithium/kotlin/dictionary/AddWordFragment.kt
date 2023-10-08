@@ -45,6 +45,8 @@ class AddWordFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        editViewModel.loadCategories()
+
         val view = DataBindingUtil.inflate<FragmentWordBinding>(
             inflater,
             R.layout.fragment_word,
@@ -107,7 +109,8 @@ class AddWordFragment: Fragment() {
                     translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
                     categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
                     photoFilePath = iconPath
-                    )
+                    ),
+                    viewLifecycleOwner
                 )
                 callBacks?.onAddWordButtonClicked()
             }

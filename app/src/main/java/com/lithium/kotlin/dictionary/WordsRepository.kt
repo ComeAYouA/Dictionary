@@ -22,6 +22,8 @@ class WordsRepository private constructor(context: Context) {
     fun getWords() = wordDao.getWords()
     fun getWord(id: UUID) = wordDao.getWord(id)
 
+    fun getCategories() = wordDao.getCategories()
+
     fun updateWord(word: Word) {
         executor.execute {
             wordDao.updateWord(word)
@@ -30,6 +32,11 @@ class WordsRepository private constructor(context: Context) {
     fun addWord(word: Word) {
         executor.execute {
             wordDao.addWord(word)
+        }
+    }
+    fun addCategory(category: Category) {
+        executor.execute{
+            wordDao.addCategory(category)
         }
     }
 

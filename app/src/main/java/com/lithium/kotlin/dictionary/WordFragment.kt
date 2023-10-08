@@ -53,6 +53,7 @@ open class EditWordFragment: Fragment() {
             false
         )
         binding = view
+
         view.translationRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
@@ -99,6 +100,7 @@ open class EditWordFragment: Fragment() {
                 }
             }
         }
+
         view.newWordIcon.setOnClickListener{
             val intent = Intent()
             intent.type = "image/*"
@@ -108,6 +110,7 @@ open class EditWordFragment: Fragment() {
                 PICK_IMAGE_AVATAR
             )
         }
+
         return view.root
     }
 
@@ -120,8 +123,11 @@ open class EditWordFragment: Fragment() {
             word?.let { word: Word ->
 
                 binding.apply {
+
                     wordEditText.setText(word.sequence)
+
                     translationRecyclerView.adapter = DeletableItemAdapter(word.translation)
+
                     categoriesRecyclerView.adapter = DeletableItemAdapter(word.categories)
 
                     iconPath = word.photoFilePath
