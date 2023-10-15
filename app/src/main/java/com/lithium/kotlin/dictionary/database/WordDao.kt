@@ -20,6 +20,8 @@ interface WordDao {
     fun getCategories(): LiveData<List<Category>>
     @Update
     fun updateWord(word: Word)
+    @Update
+    fun updateCategory(category: Category)
     @Insert
     fun addWord(word: Word)
     @Insert

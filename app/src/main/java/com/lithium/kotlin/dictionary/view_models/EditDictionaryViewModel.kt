@@ -13,10 +13,13 @@ class EditDictionaryViewModel(){
         Transformations.switchMap(wordIdLiveData){ wordId ->
             repository.getWord(wordId)
         }
+    var categories = listOf<Category>()
     var categoriesNames = listOf<String>()
     fun loadCategories(){
-        repository.getCategories().observeForever { categories ->
+        repository.getCategories().observeForever { _categories ->
+            categories = _categories
             categoriesNames = categories.map { it.name }
+
         }
     }
     fun loadWord(wordId: UUID){
@@ -28,8 +31,16 @@ class EditDictionaryViewModel(){
     fun addWord(word: Word, lifecycleOwner: LifecycleOwner){
         repository.addWord(word)
         word.categories.forEach {
-            if (!categoriesNames.contains(it)){
+            if (!categoriesNames.contains(it)) {
                 repository.addCategory(Category(it, mutableSetOf(word.id.toString())))
+            }
+        }
+        categories.forEach{
+            if (word.categories.contains(it.name)){
+                if (!it.ids.contains(word.id.toString())){
+                    it.ids.add(word.id.toString())
+                    repository.updateCategory(it)
+                }
             }
         }
     }

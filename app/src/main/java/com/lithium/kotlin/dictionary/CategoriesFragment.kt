@@ -3,6 +3,7 @@ package com.lithium.kotlin.dictionary
 import android.graphics.Color
 import android.os.Bundle
 import android.text.style.BackgroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
+private const val TAG = "CategoriesFragment"
 private val colors = arrayOf(R.color.blue_cat, R.color.red_cat, R.color.purple_cat, R.color.green_cat, R.color.orange_cat)
 class CategoriesFragment: Fragment() {
 
@@ -63,6 +65,7 @@ class CategoriesFragment: Fragment() {
 
         override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
             val category = categories[position]
+            Log.d(TAG, category.ids.fold(""){acc, s -> acc + "    " + s })
             holder.bind(category.name, position%5)
         }
     }

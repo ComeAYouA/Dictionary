@@ -29,6 +29,11 @@ class WordsRepository private constructor(context: Context) {
             wordDao.updateWord(word)
         }
     }
+    fun updateCategory(category: Category) {
+        executor.execute {
+            wordDao.updateCategory(category)
+        }
+    }
     fun addWord(word: Word) {
         executor.execute {
             wordDao.addWord(word)
