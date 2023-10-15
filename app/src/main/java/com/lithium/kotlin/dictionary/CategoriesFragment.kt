@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
-private val colors = arrayOf("#42fff6", "#f250bf", "#6de04a", "#ff7300", "#d4284d")
+private val colors = arrayOf(R.color.blue_cat, R.color.red_cat, R.color.purple_cat, R.color.green_cat, R.color.orange_cat)
 class CategoriesFragment: Fragment() {
 
     private lateinit var recyclerView: RecyclerView
@@ -47,7 +47,7 @@ class CategoriesFragment: Fragment() {
             val text = item.findViewById(R.id.category_text_view) as TextView
             val layout = item.findViewById(R.id.category_layout) as LinearLayout
             text.text = category
-            layout.setBackgroundResource(R.color.purple_200)
+            layout.setBackgroundResource(colors[colorRow])
 
         }
     }
