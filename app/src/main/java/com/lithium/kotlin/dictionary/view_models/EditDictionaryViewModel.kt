@@ -1,9 +1,6 @@
 package com.lithium.kotlin.dictionary.view_models
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.lithium.kotlin.dictionary.Category
 import com.lithium.kotlin.dictionary.Word
 import com.lithium.kotlin.dictionary.WordsRepository
@@ -30,11 +27,9 @@ class EditDictionaryViewModel(){
     }
     fun addWord(word: Word, lifecycleOwner: LifecycleOwner){
         repository.addWord(word)
-        repository.getCategories().observeForever{ categories ->
-            word.categories.forEach{ category ->
-                if (!categoriesNames.contains(category)){
-                    repository.addCategory(Category(category, mutableSetOf(word.id.toString())))
-                }
+        word.categories.forEach {
+            if (!categoriesNames.contains(it)){
+                repository.addCategory(Category(it, mutableSetOf(word.id.toString())))
             }
         }
     }

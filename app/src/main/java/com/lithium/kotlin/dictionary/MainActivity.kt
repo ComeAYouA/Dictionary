@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity(), AddWordFragment.CallBacks, DictionaryF
             .beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
             .commit()
     }
 }
