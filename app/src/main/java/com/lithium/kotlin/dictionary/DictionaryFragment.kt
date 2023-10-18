@@ -34,6 +34,7 @@ class DictionaryFragment: Fragment() {
     private val viewModel = DictionaryViewModel()
     private var callBacks: CallBacks? = null
     private val gson = Gson()
+    private lateinit var binding: FragmentDictionaryBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,13 +65,21 @@ class DictionaryFragment: Fragment() {
             false
         )
 
-        viewModel.wordsLiveData?.observe(viewLifecycleOwner){
-            view.dictionaryRecyclerView.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = WordAdapter(it)
-            }
+        binding = view
+        view.dictionaryRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
         }
          return view.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.wordsLiveData?.observe(viewLifecycleOwner){
+            binding.dictionaryRecyclerView.apply {
+                adapter = WordAdapter(it)
+
+            }
+        }
     }
 
     override fun onResume() {

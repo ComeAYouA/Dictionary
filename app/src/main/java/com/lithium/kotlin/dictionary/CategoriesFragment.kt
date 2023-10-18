@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
 private const val TAG = "CategoriesFragment"
-private val colors = arrayOf(R.color.blue_cat, R.color.red_cat, R.color.purple_cat, R.color.green_cat, R.color.orange_cat)
+private val colors = arrayOf(R.color.purple_200, R.color.purple_500, R.color.purple_700)
 class CategoriesFragment: Fragment() {
 
     private lateinit var recyclerView: RecyclerView
@@ -44,7 +44,7 @@ class CategoriesFragment: Fragment() {
     ): View? {
         val view  = inflater.inflate(R.layout.fragment_categories, container, false)
         recyclerView = view.findViewById(R.id.categories_RV) as RecyclerView
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         return view
     }
 

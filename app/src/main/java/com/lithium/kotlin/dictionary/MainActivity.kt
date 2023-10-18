@@ -49,9 +49,8 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-
     override fun onWordClicked(wordId: UUID) {
-        openFragment(EditWordFragment.newInstance(wordId))
+        openFragment(EditWordFragment.newInstance(wordId), true)
     }
     override fun onAddWordButtonClicked() {
         openFragment(DictionaryFragment())
@@ -59,23 +58,25 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onEditWordButtonClicked() {
-        openFragment(DictionaryFragment())
+        openFragment(DictionaryFragment(), true)
     }
 
     override fun onCategoryClicked(category: Category) {
-        supportFragmentManager
-            .beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .replace(R.id.fragment_container, DictionaryFragment.newInstance(category.ids.toList()))
-            .addToBackStack(null)
-            .commit()
+        openFragment(DictionaryFragment.newInstance(category.ids.toList()), true)
     }
 
-    private fun openFragment(fragment: Fragment){
+    private fun openFragment(fragment: Fragment, backStack: Boolean = false){
         supportFragmentManager
             .beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .replace(R.id.fragment_container, fragment)
-            .commit()
+            .apply {
+                if (backStack) {
+                    addToBackStack(null)
+                    commit()
+                }else{
+                    commit()
+                }
+            }
     }
 }

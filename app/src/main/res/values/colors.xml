@@ -9,9 +9,4 @@
     <color name="gray_200">#3C3C3C</color>
     <color name="gray_500">#818181</color>
     <color name="white">#FDFFFD</color>
-    <color name="blue_cat">#42fff6</color>
-    <color name="green_cat">#6de04a</color>
-    <color name="purple_cat">#f250bf</color>
-    <color name="orange_cat">#ff7300</color>
-    <color name="red_cat">#d4284d</color>
 </resources>
