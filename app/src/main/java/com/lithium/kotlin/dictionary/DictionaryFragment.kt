@@ -12,6 +12,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
 import com.lithium.kotlin.dictionary.view_models.DictionaryViewModel
@@ -22,6 +24,7 @@ import java.util.*
 
 private val PERMISSIONS = arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
 private const val MY_PERMISSION_ID = 1234
+private const val IDS_TAG = "ids"
 
 class DictionaryFragment: Fragment() {
 
@@ -30,6 +33,7 @@ class DictionaryFragment: Fragment() {
     }
     private val viewModel = DictionaryViewModel()
     private var callBacks: CallBacks? = null
+    private val gson = Gson()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,6 +44,12 @@ class DictionaryFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        arguments?.let{
+            val json = it.get(IDS_TAG) as String
+            val type = object : TypeToken<List<UUID>>() {}.type
+            val ids = gson.fromJson<List<UUID>>(json, type)
+            viewModel.load(ids)
+        }?:viewModel.load()
     }
 
     override fun onCreateView(
@@ -54,7 +64,7 @@ class DictionaryFragment: Fragment() {
             false
         )
 
-        viewModel.wordsLiveData.observe(viewLifecycleOwner){
+        viewModel.wordsLiveData?.observe(viewLifecycleOwner){
             view.dictionaryRecyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = WordAdapter(it)
@@ -68,6 +78,16 @@ class DictionaryFragment: Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             requestPermissions(PERMISSIONS, MY_PERMISSION_ID)
             return
+        }
+    }
+    companion object {
+        fun newInstance(ids: List<UUID>): DictionaryFragment {
+            val args = Bundle().apply {
+                putSerializable(IDS_TAG, Gson().toJson(ids))
+            }
+            return DictionaryFragment().apply {
+                arguments = args
+            }
         }
     }
 

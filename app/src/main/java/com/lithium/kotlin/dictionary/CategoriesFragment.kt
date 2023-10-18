@@ -1,5 +1,6 @@
 package com.lithium.kotlin.dictionary
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.style.BackgroundColorSpan
@@ -21,7 +22,21 @@ class CategoriesFragment: Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private val repository = WordsRepository.get()
+    private var callBacks: CallBacks? = null
 
+    interface CallBacks{
+        fun onCategoryClicked(category: Category)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        callBacks = context as CallBacks?
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,14 +58,20 @@ class CategoriesFragment: Fragment() {
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+        callBacks = null
+    }
+
     private inner class CategoryHolder(val item: View) : RecyclerView.ViewHolder(item){
 
-        fun bind(category: String, colorRow: Int){
+        fun bind(category: Category, colorRow: Int){
             val text = item.findViewById(R.id.category_text_view) as TextView
             val layout = item.findViewById(R.id.category_layout) as LinearLayout
-            text.text = category
+            text.text = category.name
             layout.setBackgroundResource(colors[colorRow])
-
+            layout.setOnClickListener { callBacks?.onCategoryClicked(category) }
         }
     }
     private inner class CategoryAdapter(val categories: List<Category>): RecyclerView.Adapter<CategoryHolder>(){
@@ -66,7 +87,7 @@ class CategoriesFragment: Fragment() {
         override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
             val category = categories[position]
             Log.d(TAG, category.ids.fold(""){acc, s -> acc + "    " + s })
-            holder.bind(category.name, position%5)
+            holder.bind(category, position%5)
         }
     }
 }

@@ -25,6 +25,23 @@ class WordTypeConverters {
         }
     }
     @TypeConverter
+    fun fromMutableSetUUIDSetToJson(set: MutableSet<UUID>?): String?{
+        return if(set == null){
+            gson.toJson(emptySet<UUID>())
+        }else{
+            gson.toJson(set)
+        }
+    }
+    @TypeConverter
+    fun jsonToMutableSetUUID(json: String?): MutableSet<UUID>{
+        return if (json.isNullOrEmpty()) {
+            mutableSetOf()
+        } else {
+            val type = object : TypeToken<MutableSet<UUID>>() {}.type
+            gson.fromJson(json, type)
+        }
+    }
+    @TypeConverter
     fun jsonToMutableSet(json: String?): MutableSet<String>{
         return if (json.isNullOrEmpty()) {
             mutableSetOf()

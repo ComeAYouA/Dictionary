@@ -11,7 +11,11 @@ import com.google.android.material.navigation.NavigationBarView
 import com.lithium.kotlin.dictionary.databinding.ActivityMainBinding
 import java.util.*
 
-class MainActivity : AppCompatActivity(), AddWordFragment.CallBacks, DictionaryFragment.CallBacks, EditWordFragment.CallBacks {
+class MainActivity : AppCompatActivity(),
+    AddWordFragment.CallBacks,
+    DictionaryFragment.CallBacks,
+    EditWordFragment.CallBacks ,
+    CategoriesFragment.CallBacks{
     private lateinit var bottomNavigationBar: NavigationBarView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +60,15 @@ class MainActivity : AppCompatActivity(), AddWordFragment.CallBacks, DictionaryF
 
     override fun onEditWordButtonClicked() {
         openFragment(DictionaryFragment())
+    }
+
+    override fun onCategoryClicked(category: Category) {
+        supportFragmentManager
+            .beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .replace(R.id.fragment_container, DictionaryFragment.newInstance(category.ids.toList()))
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun openFragment(fragment: Fragment){

@@ -16,6 +16,8 @@ interface WordDao {
     fun getWords(): LiveData<List<Word>>
     @Query("SELECT * FROM word WHERE id=(:id)")
     fun getWord(id: UUID): LiveData<Word?>
+    @Query("SELECT * FROM word WHERE id IN (:ids)")
+    fun getWordsByIds(ids: List<UUID>): LiveData<List<Word>>
     @Query("SELECT * FROM category")
     fun getCategories(): LiveData<List<Category>>
     @Update

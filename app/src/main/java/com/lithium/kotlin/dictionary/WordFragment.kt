@@ -198,6 +198,7 @@ open class EditWordFragment: Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when{
             requestCode == PICK_IMAGE_AVATAR && data != null -> {

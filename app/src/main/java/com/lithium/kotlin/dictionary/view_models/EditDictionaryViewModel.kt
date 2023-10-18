@@ -32,13 +32,13 @@ class EditDictionaryViewModel(){
         repository.addWord(word)
         word.categories.forEach {
             if (!categoriesNames.contains(it)) {
-                repository.addCategory(Category(it, mutableSetOf(word.id.toString())))
+                repository.addCategory(Category(it, mutableSetOf(word.id)))
             }
         }
         categories.forEach{
             if (word.categories.contains(it.name)){
-                if (!it.ids.contains(word.id.toString())){
-                    it.ids.add(word.id.toString())
+                if (!it.ids.contains(word.id)){
+                    it.ids.add(word.id)
                     repository.updateCategory(it)
                 }
             }

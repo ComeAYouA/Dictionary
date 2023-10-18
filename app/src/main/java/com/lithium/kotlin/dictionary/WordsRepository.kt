@@ -21,6 +21,7 @@ class WordsRepository private constructor(context: Context) {
 
     fun getWords() = wordDao.getWords()
     fun getWord(id: UUID) = wordDao.getWord(id)
+    fun getWordsByIds(ids: List<UUID>) = wordDao.getWordsByIds(ids)
 
     fun getCategories() = wordDao.getCategories()
 
