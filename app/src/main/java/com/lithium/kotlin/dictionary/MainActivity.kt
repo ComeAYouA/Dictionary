@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.navigation.NavigationBarView
 import com.lithium.kotlin.dictionary.databinding.ActivityMainBinding
+import com.lithium.kotlin.dictionary.models.Category
+import com.lithium.kotlin.dictionary.views.AddWordFragment
+import com.lithium.kotlin.dictionary.views.CategoriesFragment
+import com.lithium.kotlin.dictionary.views.DictionaryFragment
+import com.lithium.kotlin.dictionary.views.EditWordFragment
 import java.util.*
 
 class MainActivity : AppCompatActivity(),

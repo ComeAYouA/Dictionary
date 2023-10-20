@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary
+package com.lithium.kotlin.dictionary.views
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
+import com.lithium.kotlin.dictionary.models.Word
 import com.lithium.kotlin.dictionary.view_models.DictionaryViewModel
 import com.lithium.kotlin.dictionary.view_models.WordViewModel
 

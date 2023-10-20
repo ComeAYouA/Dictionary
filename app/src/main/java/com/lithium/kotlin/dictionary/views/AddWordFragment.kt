@@ -1,7 +1,9 @@
-package com.lithium.kotlin.dictionary
+package com.lithium.kotlin.dictionary.views
 
+import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,58 +11,58 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.view_models.EditDictionaryViewModel
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
-import com.squareup.picasso.Picasso
-import java.io.File
-import java.util.*
+import com.lithium.kotlin.dictionary.models.Word
 
+
+private const val  TAG = "WordFragment"
 private const val PICK_IMAGE_AVATAR = 0
-private const val Arg_Word_Id = "word_id"
-
-open class EditWordFragment: Fragment() {
+class AddWordFragment: Fragment() {
 
     interface CallBacks{
-        fun onEditWordButtonClicked()
+        fun onAddWordButtonClicked()
     }
 
-    private val editViewModel = EditDictionaryViewModel()
-    private lateinit var binding : FragmentWordBinding
-
-    private lateinit var iconPath: String
     private var callBacks: CallBacks? = null
+    private lateinit var iconView: ImageButton
+    private var iconPath = ""
+    private val editViewModel = EditDictionaryViewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
         callBacks = context as CallBacks?
-        editViewModel.loadWord(arguments?.getSerializable(Arg_Word_Id) as UUID)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        editViewModel.loadCategories()
+
         val view = DataBindingUtil.inflate<FragmentWordBinding>(
             inflater,
             R.layout.fragment_word,
             container,
             false
         )
-        binding = view
-
         view.translationRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = DeletableItemAdapter(mutableSetOf())
         }
         view.categoriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = DeletableItemAdapter(mutableSetOf())
         }
-
         view.translationEditText.apply {
             setOnEditorActionListener{
                     _, actionId, _ ->
@@ -101,7 +103,22 @@ open class EditWordFragment: Fragment() {
             }
         }
 
-        view.newWordIcon.setOnClickListener{
+        view.apply {
+            addButton.setOnClickListener {
+                editViewModel.addWord(
+                    Word(
+                    sequence = wordEditText.text.toString(),
+                    translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
+                    categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
+                    photoFilePath = iconPath
+                    ),
+                    viewLifecycleOwner
+                )
+                callBacks?.onAddWordButtonClicked()
+            }
+        }
+        iconView = view.newWordIcon
+        iconView.setOnClickListener{
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_PICK
@@ -110,70 +127,18 @@ open class EditWordFragment: Fragment() {
                 PICK_IMAGE_AVATAR
             )
         }
-
         return view.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        editViewModel.wordLiveData.observe(
-            viewLifecycleOwner
-        ) { word ->
-            word?.let { word: Word ->
-
-                binding.apply {
-
-                    wordEditText.setText(word.sequence)
-
-                    translationRecyclerView.adapter = DeletableItemAdapter(word.translation)
-
-                    categoriesRecyclerView.adapter = DeletableItemAdapter(word.categories)
-
-                    iconPath = word.photoFilePath
-
-                    if(iconPath != ""){
-                        Picasso.with(context).load(File(iconPath)).into(newWordIcon)
-                    }else{
-                        Picasso.with(context).load(R.drawable.ic_empty_picture).into(newWordIcon)
-                    }
-                    addButton.setOnClickListener {
-                        editViewModel.saveWord(word.copy(
-                            sequence = wordEditText.text.toString(),
-                            translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
-                            categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
-                            photoFilePath = iconPath
-                        ))
-                        callBacks?.onEditWordButtonClicked()
-                    }
-                }
-            }
-        }
-
     }
 
     override fun onDetach() {
         super.onDetach()
-
         callBacks = null
-    }
-
-    companion object {
-        fun newInstance(wordId: UUID): EditWordFragment {
-            val args = Bundle().apply {
-                putSerializable(Arg_Word_Id, wordId)
-            }
-            return EditWordFragment().apply {
-                arguments = args
-            }
-        }
     }
 
     private inner class DeletableItemHolder(private val view: View): RecyclerView.ViewHolder(view){
         fun bind(translation: String){
             val translationTextView = view.findViewById(R.id.translation_text) as TextView
             translationTextView.text = translation
-
             val deleteButton = view.findViewById(R.id.delete_button) as Button
             deleteButton.setOnClickListener {
                 (bindingAdapter as DeletableItemAdapter).apply {
@@ -181,24 +146,20 @@ open class EditWordFragment: Fragment() {
                     notifyItemRemoved(position)
                 }
             }
-
         }
     }
     private inner class DeletableItemAdapter(val data: MutableSet<String>): RecyclerView.Adapter<DeletableItemHolder>(){
         override fun getItemCount(): Int = data.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeletableItemHolder {
             val view = layoutInflater.inflate(R.layout.list_item_deletable, parent, false)
             return DeletableItemHolder(view)
         }
-
         override fun onBindViewHolder(holder: DeletableItemHolder, position: Int) {
             val word = data.toList()[position]
             holder.bind(word)
         }
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when{
             requestCode == PICK_IMAGE_AVATAR && data != null -> {
@@ -213,9 +174,10 @@ open class EditWordFragment: Fragment() {
                     }
                 )
                 iconPath = path
-                Picasso.with(requireContext()).load(File(iconPath)).into(binding.newWordIcon)
+                iconView.setImageDrawable(Drawable.createFromPath(iconPath))
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
 }

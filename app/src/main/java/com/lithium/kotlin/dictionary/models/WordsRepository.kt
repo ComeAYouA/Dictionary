@@ -1,8 +1,10 @@
-package com.lithium.kotlin.dictionary
+package com.lithium.kotlin.dictionary.models
 
 import android.content.Context
 import androidx.room.Room
-import com.lithium.kotlin.dictionary.database.WordsDataBase
+import com.lithium.kotlin.dictionary.models.database.WordsDataBase
+import com.lithium.kotlin.dictionary.models.Category
+import com.lithium.kotlin.dictionary.models.Word
 import java.util.*
 import java.util.concurrent.Executors
 

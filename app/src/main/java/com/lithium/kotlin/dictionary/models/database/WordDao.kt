@@ -1,13 +1,12 @@
-package com.lithium.kotlin.dictionary.database
+package com.lithium.kotlin.dictionary.models.database
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.lithium.kotlin.dictionary.Category
-import com.lithium.kotlin.dictionary.Word
+import com.lithium.kotlin.dictionary.models.Category
+import com.lithium.kotlin.dictionary.models.Word
 import java.util.*
 
 @Dao

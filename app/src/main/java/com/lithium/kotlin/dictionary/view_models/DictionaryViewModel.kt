@@ -1,8 +1,8 @@
 package com.lithium.kotlin.dictionary.view_models
 
 import androidx.lifecycle.LiveData
-import com.lithium.kotlin.dictionary.Word
-import com.lithium.kotlin.dictionary.WordsRepository
+import com.lithium.kotlin.dictionary.models.Word
+import com.lithium.kotlin.dictionary.models.WordsRepository
 import java.util.*
 
 class DictionaryViewModel(){

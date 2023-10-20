@@ -6,7 +6,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.Word
+import com.lithium.kotlin.dictionary.models.Word
 import com.squareup.picasso.Picasso
 import java.io.File
 

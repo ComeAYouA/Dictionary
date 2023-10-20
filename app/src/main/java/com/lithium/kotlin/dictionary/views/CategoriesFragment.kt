@@ -1,9 +1,7 @@
-package com.lithium.kotlin.dictionary
+package com.lithium.kotlin.dictionary.views
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.text.style.BackgroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
+import com.lithium.kotlin.dictionary.R
+import com.lithium.kotlin.dictionary.models.Category
+import com.lithium.kotlin.dictionary.models.WordsRepository
 
 private const val TAG = "CategoriesFragment"
 private val colors = arrayOf(R.color.purple_200, R.color.purple_500, R.color.purple_700)
@@ -87,7 +86,7 @@ class CategoriesFragment: Fragment() {
         override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
             val category = categories[position]
             Log.d(TAG, category.ids.fold(""){acc, s -> acc + "    " + s })
-            holder.bind(category, position%5)
+            holder.bind(category, position%3)
         }
     }
 }
