@@ -4,6 +4,8 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,15 +13,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.view_models.EditDictionaryViewModel
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
-import com.lithium.kotlin.dictionary.models.TranslateResponse
+import com.lithium.kotlin.dictionary.models.translateApi.TranslateResponse
 import com.lithium.kotlin.dictionary.models.Word
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -27,54 +30,69 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayDeque
 
 private const val PICK_IMAGE_AVATAR = 0
 private const val Arg_Word_Id = "word_id"
 
-open class EditWordFragment: Fragment() {
+class EditWordFragment: Fragment() {
 
     interface CallBacks{
         fun onEditWordButtonClicked()
+        fun onAddWordButtonClicked()
     }
+
 
     private val editViewModel = EditDictionaryViewModel()
     private lateinit var binding : FragmentWordBinding
+    private val translate: MutableLiveData<String> = MutableLiveData()
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnableQueue = ArrayDeque<Runnable>()
 
-    private lateinit var iconPath: String
+    private var iconPath: String = ""
     private var callBacks: CallBacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         callBacks = context as CallBacks?
-        editViewModel.loadWord(arguments?.getSerializable(Arg_Word_Id) as UUID)
+        arguments?.getSerializable(Arg_Word_Id)?.let {
+            editViewModel.loadWord(it as UUID)
+        }
+        editViewModel.loadCategories()
     }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = DataBindingUtil.inflate<FragmentWordBinding>(
+        binding = DataBindingUtil.inflate<FragmentWordBinding>(
             inflater,
             R.layout.fragment_word,
             container,
             false
         )
-        binding = view
 
-        view.translationRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.wordEditText.apply{
+            doAfterTextChanged {
+                requestWithDelay(this.text.toString())
+            }
         }
-        view.categoriesRecyclerView.apply {
+        binding.translationRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = DeletableItemAdapter(mutableSetOf())
+        }
+        binding.categoriesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = DeletableItemAdapter(mutableSetOf())
         }
 
-        view.translationEditText.apply {
+        binding.translationEditText.apply {
             setOnEditorActionListener{
                     _, actionId, _ ->
 
                 if(actionId == EditorInfo.IME_ACTION_NEXT){
-                    (view.translationRecyclerView.adapter as DeletableItemAdapter).apply {
+                    (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
                         val input = text.toString()
                         if(!data.contains(input)) {
                             data.add(input)
@@ -89,12 +107,12 @@ open class EditWordFragment: Fragment() {
             }
         }
 
-        view.categoriesEditText.apply {
+        binding.categoriesEditText.apply {
             setOnEditorActionListener{
                     _, actionId, _ ->
 
                 if(actionId == EditorInfo.IME_ACTION_NEXT){
-                    (view.categoriesRecyclerView.adapter as DeletableItemAdapter).apply {
+                    (binding.categoriesRecyclerView.adapter as DeletableItemAdapter).apply {
                         val input = text.toString()
                         if(!data.contains(input)) {
                             data.add(input)
@@ -109,7 +127,7 @@ open class EditWordFragment: Fragment() {
             }
         }
 
-        view.newWordIcon.setOnClickListener{
+        binding.newWordIcon.setOnClickListener{
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_PICK
@@ -119,11 +137,24 @@ open class EditWordFragment: Fragment() {
             )
         }
 
-        return view.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        binding.addButton.setOnClickListener{
+            editViewModel.addWord(
+                Word(
+                    sequence = binding.wordEditText.text.toString(),
+                    translation = (binding.translationRecyclerView.adapter as DeletableItemAdapter).data,
+                    categories = (binding.categoriesRecyclerView.adapter as DeletableItemAdapter).data,
+                    photoFilePath = iconPath
+                )
+            )
+            callBacks?.onAddWordButtonClicked()
+        }
 
         editViewModel.wordLiveData.observe(
             viewLifecycleOwner
@@ -150,27 +181,32 @@ open class EditWordFragment: Fragment() {
                             sequence = wordEditText.text.toString(),
                             translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
                             categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
-                            photoFilePath = iconPath
-                        ))
+                            photoFilePath = iconPath))
                         callBacks?.onEditWordButtonClicked()
                     }
                 }
-                val request = editViewModel.translateRequest(word.sequence)
-
-                request.enqueue(object : Callback<TranslateResponse> {
-                    override fun onFailure(call: Call<TranslateResponse>, t: Throwable) {
-                        Log.e("Trans", "Failed to fetch translation", t)
-                    }
-                    override fun onResponse(
-                        call: Call<TranslateResponse>,
-                        response: Response<TranslateResponse>
-                    ) {
-                        Toast.makeText(requireContext(), response.body()!!.translatedText, Toast.LENGTH_SHORT).show()
-                    }
-                })
             }
         }
 
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+
+        translate.observe(viewLifecycleOwner){
+            (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
+                if(!data.contains(it)) {
+                    if (it != null) {
+                        data.add(it)
+                        notifyItemInserted(data.size - 1)
+                    }else{
+                        data.clear()
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDetach() {
@@ -180,7 +216,7 @@ open class EditWordFragment: Fragment() {
     }
 
     companion object {
-        fun newInstance(wordId: UUID): EditWordFragment {
+        fun newInstance(wordId: UUID? = null): EditWordFragment {
             val args = Bundle().apply {
                 putSerializable(Arg_Word_Id, wordId)
             }
@@ -220,6 +256,7 @@ open class EditWordFragment: Fragment() {
     }
 
     @Deprecated("Deprecated in Java")
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when{
             requestCode == PICK_IMAGE_AVATAR && data != null -> {
@@ -239,4 +276,34 @@ open class EditWordFragment: Fragment() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+    private fun requestWithDelay(word: String){
+        val latest: Long = System.currentTimeMillis()
+        val delay: Long = 2000
+        val r = Runnable {
+            kotlin.run {
+                if(System.currentTimeMillis() - delay > latest){
+                    editViewModel.translateRequest(word).enqueue(object:
+                        Callback<TranslateResponse>{
+                        override fun onFailure(call: Call<TranslateResponse>, t: Throwable) {
+                            Log.e("Trans", "Failed to fetch translation", t)
+                        }
+
+                        override fun onResponse(
+                            call: Call<TranslateResponse>,
+                            response: Response<TranslateResponse>
+                        ) {
+                            translate.value = response.body()?.translatedText
+                        }
+                    })
+                }
+            }
+        }
+        if (runnableQueue.isNotEmpty()) {
+            val previousRunnable = runnableQueue.removeFirst()
+            handler.removeCallbacks(previousRunnable)
+        }
+        runnableQueue.add(r)
+        handler.postDelayed(r, delay + 50)
+    }
+
 }

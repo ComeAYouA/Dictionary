@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_dictionary_picture"/>
     <item android:id="@+id/menu_categories"
         android:title="@string/categories"
-        android:icon="@drawable/ic_launcher_foreground"/>
+        android:icon="@drawable/ic_navigation_categories"/>
     <item android:id="@+id/menu_add_word"
         android:title="@string/add_word"
         android:icon="@drawable/ic_add_button_2"/>

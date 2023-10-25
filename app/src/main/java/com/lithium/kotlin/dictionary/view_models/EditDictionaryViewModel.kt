@@ -5,6 +5,8 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.lithium.kotlin.dictionary.models.*
 import com.lithium.kotlin.dictionary.models.translateApi.TranslateApi
+import com.lithium.kotlin.dictionary.models.translateApi.TranslateBody
+import com.lithium.kotlin.dictionary.models.translateApi.TranslateResponse
 import retrofit2.Call
 import java.util.*
 
@@ -41,9 +43,24 @@ class EditDictionaryViewModel(){
 
     fun saveWord(word: Word){
         repository.updateWord(word)
+
+        word.categories.forEach {
+            if (!categoriesNames.contains(it)) {
+                repository.addCategory(Category(it, mutableSetOf(word.id)))
+            }
+        }
+
+        categories.forEach{
+            if (word.categories.contains(it.name)){
+                if (!it.ids.contains(word.id)){
+                    it.ids.add(word.id)
+                    repository.updateCategory(it)
+                }
+            }
+        }
     }
 
-    fun addWord(word: Word, lifecycleOwner: LifecycleOwner){
+    fun addWord(word: Word){
         repository.addWord(word)
         word.categories.forEach {
             if (!categoriesNames.contains(it)) {
