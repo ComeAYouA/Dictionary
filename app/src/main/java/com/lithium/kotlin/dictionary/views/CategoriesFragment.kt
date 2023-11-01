@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.models.Category
 import com.lithium.kotlin.dictionary.models.WordsRepository
@@ -43,7 +45,7 @@ class CategoriesFragment: Fragment() {
     ): View? {
         val view  = inflater.inflate(R.layout.fragment_categories, container, false)
         recyclerView = view.findViewById(R.id.categories_RV) as RecyclerView
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         return view
     }
 
@@ -85,7 +87,6 @@ class CategoriesFragment: Fragment() {
 
         override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
             val category = categories[position]
-            Log.d(TAG, category.ids.fold(""){acc, s -> acc + "    " + s })
             holder.bind(category, position%3)
         }
     }

@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -20,6 +24,12 @@ import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
 import com.lithium.kotlin.dictionary.models.Word
 import com.lithium.kotlin.dictionary.view_models.DictionaryViewModel
 import com.lithium.kotlin.dictionary.view_models.WordViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.Dispatcher
 
 import java.util.*
 
@@ -33,7 +43,9 @@ class DictionaryFragment: Fragment() {
     interface CallBacks{
         fun onWordClicked(wordId: UUID)
     }
-    private val viewModel = DictionaryViewModel()
+    private val viewModel :DictionaryViewModel by lazy {
+        ViewModelProvider(this).get(DictionaryViewModel::class.java)
+    }
     private var callBacks: CallBacks? = null
     private val gson = Gson()
     private lateinit var binding: FragmentDictionaryBinding
@@ -71,6 +83,7 @@ class DictionaryFragment: Fragment() {
         view.dictionaryRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
         }
+
          return view.root
     }
 
@@ -79,7 +92,6 @@ class DictionaryFragment: Fragment() {
         viewModel.wordsLiveData?.observe(viewLifecycleOwner){
             binding.dictionaryRecyclerView.apply {
                 adapter = WordAdapter(it)
-
             }
         }
     }
@@ -142,4 +154,5 @@ class DictionaryFragment: Fragment() {
             holder.bind(word)
         }
     }
+
 }

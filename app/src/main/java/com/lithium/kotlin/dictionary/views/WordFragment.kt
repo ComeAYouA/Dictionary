@@ -17,6 +17,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
@@ -43,7 +44,10 @@ class EditWordFragment: Fragment() {
     }
 
 
-    private val editViewModel = EditDictionaryViewModel()
+    private val editViewModel: EditDictionaryViewModel by lazy{
+        ViewModelProvider(this).get(EditDictionaryViewModel::class.java)
+    }
+
     private lateinit var binding : FragmentWordBinding
     private val translate: MutableLiveData<String> = MutableLiveData()
     private val handler = Handler(Looper.getMainLooper())

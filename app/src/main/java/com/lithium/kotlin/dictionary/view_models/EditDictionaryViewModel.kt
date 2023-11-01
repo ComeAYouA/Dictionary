@@ -10,7 +10,7 @@ import com.lithium.kotlin.dictionary.models.translateApi.TranslateResponse
 import retrofit2.Call
 import java.util.*
 
-class EditDictionaryViewModel(){
+class EditDictionaryViewModel : ViewModel(){
     private val repository: WordsRepository = WordsRepository.get()
     private val wordIdLiveData = MutableLiveData<UUID>()
     private val translateApi = TranslateApi.get()
