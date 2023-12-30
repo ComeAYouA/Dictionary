@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.models.database
+package com.lithium.kotlin.dictionary.data.repositories.database
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

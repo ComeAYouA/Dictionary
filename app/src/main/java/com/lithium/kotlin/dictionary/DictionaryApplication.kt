@@ -1,8 +1,8 @@
 package com.lithium.kotlin.dictionary
 
 import android.app.Application
-import com.lithium.kotlin.dictionary.models.translateApi.TranslateApi
-import com.lithium.kotlin.dictionary.models.WordsRepository
+import com.lithium.kotlin.dictionary.data.repositories.translateApi.TranslateApi
+import com.lithium.kotlin.dictionary.data.repositories.WordsRepository
 
 class DictionaryApplication: Application() {
     override fun onCreate() {

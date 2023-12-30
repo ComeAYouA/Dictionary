@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.models
+package com.lithium.kotlin.dictionary.domain.localdatabasemodels
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.models.translateApi
+package com.lithium.kotlin.dictionary.data.repositories.translateApi
 
 import android.content.Context
 import retrofit2.Retrofit

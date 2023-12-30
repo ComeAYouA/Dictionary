@@ -1,10 +1,10 @@
-package com.lithium.kotlin.dictionary.models.database
+package com.lithium.kotlin.dictionary.data.repositories.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.lithium.kotlin.dictionary.models.Category
-import com.lithium.kotlin.dictionary.models.Word
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
 
 @Database(entities = [ Word::class, Category::class], version = 1)
 @TypeConverters(WordTypeConverters::class)

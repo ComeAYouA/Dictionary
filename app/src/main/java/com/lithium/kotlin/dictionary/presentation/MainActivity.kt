@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary
+package com.lithium.kotlin.dictionary.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,11 +7,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationBarView
+import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.databinding.ActivityMainBinding
-import com.lithium.kotlin.dictionary.models.Category
-import com.lithium.kotlin.dictionary.views.CategoriesFragment
-import com.lithium.kotlin.dictionary.views.DictionaryFragment
-import com.lithium.kotlin.dictionary.views.EditWordFragment
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment
+import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment
+import com.lithium.kotlin.dictionary.presentation.word.EditWordFragment
 import java.util.*
 
 private const val DICTIONARY_FRAGMENT_TAG = "DictionaryFragment"
@@ -30,7 +31,9 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this,
+            R.layout.activity_main
+        )
         bottomNavigationBar = binding.bottomNavigationBar
 
         val currentFragment =

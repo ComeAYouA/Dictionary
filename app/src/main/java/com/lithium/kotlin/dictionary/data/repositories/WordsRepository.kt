@@ -1,10 +1,10 @@
-package com.lithium.kotlin.dictionary.models
+package com.lithium.kotlin.dictionary.data.repositories
 
 import android.content.Context
 import androidx.room.Room
-import com.lithium.kotlin.dictionary.models.database.WordsDataBase
-import com.lithium.kotlin.dictionary.models.Category
-import com.lithium.kotlin.dictionary.models.Word
+import com.lithium.kotlin.dictionary.data.repositories.database.WordsDataBase
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -27,25 +27,20 @@ class WordsRepository private constructor(context: Context) {
 
     fun getCategories() = wordDao.getCategories()
 
-    fun updateWord(word: Word) {
-        executor.execute {
-            wordDao.updateWord(word)
-        }
+    suspend fun updateWord(word: Word) {
+        wordDao.updateWord(word)
     }
-    fun updateCategory(category: Category) {
-        executor.execute {
-            wordDao.updateCategory(category)
-        }
+    suspend fun updateCategory(category: Category) {
+        wordDao.updateCategory(category)
+
     }
-    fun addWord(word: Word) {
-        executor.execute {
-            wordDao.addWord(word)
-        }
+    suspend fun addWord(word: Word) {
+        wordDao.addWord(word)
+
     }
-    fun addCategory(category: Category) {
-        executor.execute{
-            wordDao.addCategory(category)
-        }
+    suspend fun addCategory(category: Category) {
+        wordDao.addCategory(category)
+
     }
 
     companion object {

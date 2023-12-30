@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.view_models
+package com.lithium.kotlin.dictionary.presentation.categories
 
 import android.content.Context
 import android.widget.ImageView
@@ -6,7 +6,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.models.Word
+import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
 import com.squareup.picasso.Picasso
 import java.io.File
 
@@ -15,6 +15,7 @@ class WordViewModel(private val context: Context): BaseObservable() {
         set(word) {
             field = word
             notifyChange()
+
         }
     @get: Bindable
     val sequence: String?
