@@ -28,16 +28,16 @@ class EditDictionaryViewModel : ViewModel(){
     private val _translate: MutableStateFlow<String> = MutableStateFlow("")
     val translate: StateFlow<String> = _translate.asStateFlow()
 
-    private val requestsContext = SupervisorJob() + Dispatchers.IO
+    private val translationRequestsContext = SupervisorJob() + Dispatchers.IO
 
     private val translateApi = TranslateApi.get()
 
     fun translateRequest(word: String) {
 
 
-        requestsContext.cancelChildren()
+        translationRequestsContext.cancelChildren()
 
-        viewModelScope.launch(requestsContext) {
+        viewModelScope.launch(translationRequestsContext) {
 
             val body = TranslateBody(q = word)
             delay(3000)

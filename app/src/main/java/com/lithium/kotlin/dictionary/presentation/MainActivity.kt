@@ -1,14 +1,21 @@
 package com.lithium.kotlin.dictionary.presentation
 
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.ParcelUuid
+
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.databinding.ActivityMainBinding
 import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
 import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment
 import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment
@@ -16,91 +23,46 @@ import com.lithium.kotlin.dictionary.presentation.word.EditWordFragment
 import java.util.*
 
 private const val DICTIONARY_FRAGMENT_TAG = "DictionaryFragment"
-private const val WORD_FRAGMENT_TAG = "DictionaryFragment"
-private const val CATEGORIES_FRAGMENT_TAG = "DictionaryFragment"
-private const val DICTIONARY_TAG = "DictionaryFragment"
+private const val EDIT_WORD_FRAGMENT_TAG = "EditWordFragment"
+private const val CATEGORIES_FRAGMENT_TAG = "CategoriesFragment"
+
 class MainActivity : AppCompatActivity(),
     DictionaryFragment.CallBacks,
     EditWordFragment.CallBacks ,
-    CategoriesFragment.CallBacks{
+    CategoriesFragment.CallBacks {
 
     private lateinit var bottomNavigationBar: NavigationBarView
-    private lateinit var currentFragmentId : String
+    private lateinit var navController: NavController
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this,
-            R.layout.activity_main
-        )
-        bottomNavigationBar = binding.bottomNavigationBar
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
 
-        val currentFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container)
-        if(currentFragment == null){
-            supportFragmentManager
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .add(R.id.fragment_container, DictionaryFragment())
-                .commit()
-            currentFragmentId = DICTIONARY_FRAGMENT_TAG
-        }
+        navController = findNavController(R.id.fragmentContainerView)
 
-        binding.bottomNavigationBar.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.menu_add_word -> {
-                    openFragment(EditWordFragment.newInstance(), clear = true)
-                    currentFragmentId = WORD_FRAGMENT_TAG
-                    true
-                }
-                R.id.menu_dictionary -> {
-                    openFragment(DictionaryFragment(), clear = true)
-                    currentFragmentId = DICTIONARY_FRAGMENT_TAG
-                    true
-                }
-                R.id.menu_categories -> {
-                    openFragment(CategoriesFragment(), clear = true)
-                    currentFragmentId = CATEGORIES_FRAGMENT_TAG
-                    true
-                }
-                else -> {false}
-            }
-        }
+        bottomNavigationBar.setupWithNavController(navController)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onWordClicked(wordId: UUID) {
-        openFragment(EditWordFragment.newInstance(wordId), true)
+
     }
+
     override fun onAddWordButtonClicked() {
-        openFragment(DictionaryFragment())
-        bottomNavigationBar.selectedItemId = R.id.menu_dictionary
+        bottomNavigationBar.selectedItemId = R.id.dictionaryFragment
     }
 
     override fun onEditWordButtonClicked() {
-        openFragment(DictionaryFragment())
-        bottomNavigationBar.selectedItemId = R.id.menu_dictionary
+        bottomNavigationBar.selectedItemId = R.id.dictionaryFragment
     }
 
     override fun onCategoryClicked(category: Category) {
-        openFragment(DictionaryFragment.newInstance(category.ids.toList()), true)
-    }
-
-    private fun openFragment(fragment: Fragment, backStack: Boolean = false, clear: Boolean = false){
-
-        if (clear) supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
-        supportFragmentManager
-            .beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .replace(R.id.fragment_container, fragment)
-            .apply {
-                if (backStack) {
-                    addToBackStack(null)
-                    commit()
-                }else{
-                    commit()
-                }
-            }
     }
 }

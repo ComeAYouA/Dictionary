@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.lithium.kotlin.dictionary.presentation.categories.WordViewModel" />
+            type="com.lithium.kotlin.dictionary.presentation.dictionary.WordViewModel" />
     </data>
 
 <LinearLayout

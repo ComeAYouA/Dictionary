@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_dictionary"
-        android:title="@string/dictionary"
-        android:icon="@drawable/ic_dictionary_picture"/>
-    <item android:id="@+id/menu_categories"
-        android:title="@string/categories"
-        android:icon="@drawable/ic_navigation_categories"/>
-    <item android:id="@+id/menu_add_word"
-        android:title="@string/add_word"
-        android:icon="@drawable/ic_add_button_2"/>
-    <item android:id="@+id/menu_training"
-        android:title="@string/training"
-        android:icon="@drawable/ic_launcher_foreground"/>
-    <item android:id="@+id/menu_profile"
-        android:title="@string/profile"
-        android:icon="@drawable/ic_launcher_foreground"/>
+    <item
+        android:id="@id/dictionaryFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_dictionary_picture"
+        android:title="Dictionary" />
+
+    <item
+        android:id="@id/editWordFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_add_button_2"
+        android:title="Add Word" />
+
+    <item
+        android:id="@id/categoriesFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_navigation_categories"
+        android:title="Categories" />
 </menu>

@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import kotlinx.coroutines.launch
 
 private const val TAG = "CategoriesFragment"
 
@@ -40,13 +44,13 @@ class CategoriesFragment: Fragment() {
         super.onCreate(savedInstanceState)
         viewModel.loadCategories()
 
-        lifecycleScope.launchWhenStarted {
+        categoriesAdapter = CategoriesAdapter(callBacks, layoutInflater)
 
-
-            viewModel.categories.collect {
-                categoriesAdapter = CategoriesAdapter(callBacks, layoutInflater)
-
-                categoriesRecyclerView.adapter = categoriesAdapter.Adapter(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.categories.collect {
+                    categoriesRecyclerView.adapter = categoriesAdapter.Adapter(it)
+                }
             }
         }
     }
@@ -55,10 +59,13 @@ class CategoriesFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_categories, container, false)
+
         categoriesRecyclerView = view.findViewById(R.id.categories_RV) as RecyclerView
-        categoriesRecyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+
+        categoriesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+
         return view
     }
 

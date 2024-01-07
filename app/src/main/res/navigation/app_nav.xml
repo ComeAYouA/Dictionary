@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav"
+    app:startDestination="@id/dictionaryFragment">
+
+    <fragment
+        android:id="@+id/dictionaryFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment"
+        android:label="Dictionary"
+        tools:layout="@layout/fragment_dictionary" >
+        <argument
+            android:name="ids"
+            app:argType="android.os.ParcelUuid[]"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment"
+        android:label="Categories"
+        tools:layout="@layout/fragment_categories" />
+
+    <fragment
+        android:id="@+id/editWordFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.word.EditWordFragment"
+        android:label="EditWord"
+        tools:layout="@layout/fragment_word">
+        <argument
+            android:name="wordId"
+            app:argType="java.util.UUID"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+</navigation>

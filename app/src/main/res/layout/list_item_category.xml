@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:background="@color/purple_200"
-    android:layout_margin="22dp"
+    android:layout_margin="3dp"
     android:elevation="26dp">
 
     <TextView
@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold|italic"
+        android:gravity="center"
         tools:text="category" />
 
 </LinearLayout>

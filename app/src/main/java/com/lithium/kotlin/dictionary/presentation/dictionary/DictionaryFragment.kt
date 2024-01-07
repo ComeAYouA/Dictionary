@@ -4,18 +4,21 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 private val PERMISSIONS = arrayOf(
@@ -23,7 +26,7 @@ private val PERMISSIONS = arrayOf(
     Manifest.permission.WRITE_EXTERNAL_STORAGE
 )
 private const val MY_PERMISSION_ID = 1234
-private const val IDS_TAG = "ids"
+
 
 class DictionaryFragment: Fragment() {
 
@@ -36,29 +39,37 @@ class DictionaryFragment: Fragment() {
         ViewModelProvider(this)[DictionaryViewModel::class.java]
     }
     private lateinit var dictionaryAdapter: DictionaryAdapter
+    private val args: DictionaryFragmentArgs by navArgs()
     private var callBacks: CallBacks? = null
-    private val gson = Gson()
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callBacks = context as CallBacks?
+
+        Log.d("myTag", "DictionaryFragment attached")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let{
-            val json = it.get(IDS_TAG) as String
-            val type = object : TypeToken<List<UUID>>() {}.type
-            val ids = gson.fromJson<List<UUID>>(json, type)
-            viewModel.load(ids)
+        Log.d("myTag", "DictionaryFragment Opened")
+
+        args.ids?.let { ids ->
+            viewModel.load(ids.toList().map { id -> id.uuid })
         }?:viewModel.load()
 
-        lifecycleScope.launchWhenStarted {
+
+        lifecycleScope.launch {
             dictionaryAdapter = DictionaryAdapter(requireContext(), callBacks, layoutInflater)
 
-            viewModel.words.collect{
-                binding.dictionaryRecyclerView.adapter = dictionaryAdapter.Adapter(it)
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                Log.d("myTag", "Dictionary scope")
+
+                viewModel.words.collect {
+                    binding.dictionaryRecyclerView.adapter = dictionaryAdapter.Adapter(it)
+                }
+
             }
         }
     }
@@ -67,16 +78,19 @@ class DictionaryFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        binding  = DataBindingUtil.inflate<FragmentDictionaryBinding>(
+        binding  = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_dictionary,
             container,
             false
         )
 
-        binding.dictionaryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.dictionaryRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
 
         return binding.root
     }
@@ -86,16 +100,6 @@ class DictionaryFragment: Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             requestPermissions(PERMISSIONS, MY_PERMISSION_ID)
             return
-        }
-    }
-    companion object {
-        fun newInstance(ids: List<UUID>): DictionaryFragment {
-            val args = Bundle().apply {
-                putSerializable(IDS_TAG, Gson().toJson(ids))
-            }
-            return DictionaryFragment().apply {
-                arguments = args
-            }
         }
     }
 

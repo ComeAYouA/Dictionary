@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.categories
+package com.lithium.kotlin.dictionary.presentation.dictionary
 
 import android.content.Context
 import android.widget.ImageView
@@ -24,13 +24,16 @@ class WordViewModel(private val context: Context): BaseObservable() {
     @get: Bindable
     val translation: String
         get() = word?.translation.toString()
+    @get: Bindable
+    val categories: String
+        get() = word?.categories.toString()
 
     @BindingAdapter("app:drawable")
     fun loadIcon(imageView: ImageView, path:String){
         if(word?.photoFilePath != ""){
-            Picasso.with(context).load(File(path)).into(imageView)
+            Picasso.with(context).load(File(path)).resize(170, 170).into(imageView)
         }else{
-            Picasso.with(context).load(R.drawable.ic_empty_picture).into(imageView)
+            Picasso.with(context).load(R.drawable.ic_empty_picture).resize(170, 170).into(imageView)
         }
     }
 }

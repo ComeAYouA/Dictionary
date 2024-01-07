@@ -1,5 +1,6 @@
 package com.lithium.kotlin.dictionary.presentation.word
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -19,9 +20,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -33,6 +37,8 @@ import com.squareup.picasso.Picasso
 import java.io.File
 import java.util.*
 import com.lithium.kotlin.dictionary.presentation.word.EditWordAdapter.DeletableItemAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.collections.ArrayDeque
 
 private const val PICK_IMAGE_AVATAR = 0
@@ -46,10 +52,11 @@ class EditWordFragment: Fragment() {
     }
 
 
+    private lateinit var binding : FragmentWordBinding
     private val editViewModel: EditDictionaryViewModel by lazy{
         ViewModelProvider(this)[EditDictionaryViewModel::class.java]
     }
-    private lateinit var binding : FragmentWordBinding
+    private val args: EditWordFragmentArgs by navArgs()
     private lateinit var editWordAdapter: EditWordAdapter
 
     private var iconPath: String = ""
@@ -68,49 +75,63 @@ class EditWordFragment: Fragment() {
 
         editViewModel.loadCategories()
 
-        arguments?.getSerializable(Arg_Word_Id)?.let {
-            editViewModel.loadWord(it as UUID)
-        }
+        args.wordId?.let {
+            editViewModel.loadWord(it)
 
-        lifecycleScope.launchWhenStarted {
-            editViewModel.translate.collect{
-                (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
-                    if(!data.contains(it)) {
-                        data.add(it)
-                        notifyItemInserted(data.size - 1)
+            lifecycleScope.launch {
+
+                repeatOnLifecycle(Lifecycle.State.STARTED){
+
+                    editViewModel.word.collect { word: Word ->
+
+                        launch(Dispatchers.Main) {
+
+                            binding.apply {
+
+                                wordEditText.setText(word.sequence)
+
+                                translationRecyclerView.adapter =
+                                    editWordAdapter.DeletableItemAdapter(word.translation)
+                                categoriesRecyclerView.adapter =
+                                    editWordAdapter.DeletableItemAdapter(word.categories)
+
+                                iconPath = word.photoFilePath
+                                if (iconPath != "") {
+                                    Picasso.with(context).load(File(iconPath)).fit()
+                                        .into(newWordIcon)
+                                } else {
+                                    Picasso.with(context).load(R.drawable.ic_empty_picture)
+                                        .into(newWordIcon)
+                                }
+
+                                addButton.setOnClickListener {
+                                    Log.d("request", "Saving word")
+                                    editViewModel.saveWord(
+                                        word.copy(
+                                            sequence = wordEditText.text.toString(),
+                                            translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
+                                            categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
+                                            photoFilePath = iconPath
+                                        )
+                                    )
+                                    callBacks?.onEditWordButtonClicked()
+                                }
+                            }
+                        }
                     }
-
                 }
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                editViewModel.translate.collect{
+                    (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
+                        if(!data.contains(it) && it != "") {
+                            data.add(it)
+                            notifyItemInserted(data.size - 1)
+                        }
 
-            editViewModel.word.collect{ word: Word ->
-
-                binding.apply {
-
-                    wordEditText.setText(word.sequence)
-
-                    translationRecyclerView.adapter = editWordAdapter.DeletableItemAdapter(word.translation)
-
-                    categoriesRecyclerView.adapter = editWordAdapter.DeletableItemAdapter(word.categories)
-
-                    iconPath = word.photoFilePath
-
-                    if(iconPath != ""){
-                        Picasso.with(context).load(File(iconPath)).fit().into(newWordIcon)
-                    }else{
-                        Picasso.with(context).load(R.drawable.ic_empty_picture).into(newWordIcon)
-                    }
-
-                    addButton.setOnClickListener {
-                        editViewModel.saveWord(word.copy(
-                            sequence = wordEditText.text.toString(),
-                            translation = (translationRecyclerView.adapter as DeletableItemAdapter).data,
-                            categories = (categoriesRecyclerView.adapter as DeletableItemAdapter).data,
-                            photoFilePath = iconPath))
-                        callBacks?.onEditWordButtonClicked()
                     }
                 }
             }
@@ -129,68 +150,13 @@ class EditWordFragment: Fragment() {
             false
         )
 
-        binding.wordEditText.apply{
-            doAfterTextChanged {
-                editViewModel.translateRequest(this.text.toString())
-            }
-        }
-
-        binding.translationRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = editWordAdapter.DeletableItemAdapter(mutableSetOf())
-        }
-        binding.categoriesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = editWordAdapter.DeletableItemAdapter(mutableSetOf())
-        }
-
-        binding.translationEditText.setOnEditorActionListener{
-                view, actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_NEXT){
-                (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
-                    val input = view.text.toString()
-                    if(!data.contains(input)) {
-                        this.data.add(input)
-                    }
-                    notifyItemInserted(data.size - 1)
-                }
-                view.setText(R.string.empty)
-                true
-            }else{
-                true
-            }
-        }
-
-        binding.categoriesEditText.setOnEditorActionListener{
-                view, actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_NEXT){
-                (binding.categoriesRecyclerView.adapter as DeletableItemAdapter).apply {
-                    val input = view.text.toString()
-                    if(!data.contains(input)) {
-                        this.data.add(input)
-                    }
-                    notifyItemInserted(data.size - 1)
-                }
-                view.setText(R.string.empty)
-                true
-            }else{
-                true
-            }
-        }
-
-        binding.newWordIcon.setOnClickListener{
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_PICK
-            startActivityForResult(
-                Intent.createChooser(intent, "Select Picture"),
-                PICK_IMAGE_AVATAR
-            )
-        }
+        binding.translationRecyclerView.apply { prepareDeletableItemsRecyclerView(editWordAdapter) }
+        binding.categoriesRecyclerView.apply { prepareDeletableItemsRecyclerView(editWordAdapter) }
 
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -206,6 +172,30 @@ class EditWordFragment: Fragment() {
             )
             callBacks?.onAddWordButtonClicked()
         }
+
+        binding.wordEditText.apply{
+            doAfterTextChanged {
+                if (this.text.toString() == ""){
+                    (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
+                        data.clear()
+                        notifyDataSetChanged()
+                    }
+                }
+                editViewModel.translateRequest(this.text.toString())
+            }
+        }
+
+        binding.translationEditText.setOnEditorActionListener{
+                editTextView, actionId, event ->
+            editWordAdapter.addCellToList(binding.translationRecyclerView.adapter as DeletableItemAdapter)(editTextView, actionId, event)
+        }
+
+        binding.categoriesEditText.setOnEditorActionListener{
+                editTextView, actionId, event ->
+            editWordAdapter.addCellToList(binding.categoriesRecyclerView.adapter as DeletableItemAdapter)(editTextView, actionId, event)
+        }
+
+        binding.newWordIcon.setOnClickListener{ startSelectWordIconIntent() }
 
     }
 
@@ -227,6 +217,7 @@ class EditWordFragment: Fragment() {
     }
 
 
+    @SuppressLint("Recycle")
     @Deprecated("Deprecated in Java")
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
