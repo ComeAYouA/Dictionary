@@ -6,7 +6,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
+import com.lithium.kotlin.dictionary.domain.models.Word
 import com.squareup.picasso.Picasso
 import java.io.File
 
@@ -22,11 +22,11 @@ class WordViewModel(private val context: Context): BaseObservable() {
         get() = word?.sequence
 
     @get: Bindable
-    val translation: String
-        get() = word?.translation.toString()
+    val translation: List<String>?
+        get() = word?.translation?.toList()
     @get: Bindable
-    val categories: String
-        get() = word?.categories.toString()
+    val categories: List<String>?
+        get() = word?.categories?.toList()
 
     @BindingAdapter("app:drawable")
     fun loadIcon(imageView: ImageView, path:String){

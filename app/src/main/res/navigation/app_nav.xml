@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/editWordFragment"
-        android:name="com.lithium.kotlin.dictionary.presentation.word.EditWordFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.word.AddWordFragment"
         android:label="EditWord"
         tools:layout="@layout/fragment_word">
         <argument

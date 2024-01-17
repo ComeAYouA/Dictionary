@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.domain.translateapimodels
+package com.lithium.kotlin.dictionary.domain.api
 
 import com.google.gson.annotations.SerializedName
 

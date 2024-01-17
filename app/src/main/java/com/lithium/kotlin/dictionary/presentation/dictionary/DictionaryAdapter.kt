@@ -1,14 +1,13 @@
 package com.lithium.kotlin.dictionary.presentation.dictionary
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
+import com.lithium.kotlin.dictionary.domain.models.Word
 
 
 class DictionaryAdapter(
@@ -28,8 +27,8 @@ class DictionaryAdapter(
 
                 wordLayout.wordEditText.setText(viewModel?.sequence)
 
-                wordLayout.translationsText.text = "tr: ${viewModel?.translation}"
-                wordLayout.categoriesText.text = "cat: ${viewModel?.categories}"
+                wordLayout.translationsEllipticalListView.items = viewModel?.translation?: listOf()
+                wordLayout.categoriesEllipticalListView.items = viewModel?.categories?: listOf()
 
                 viewModel?.loadIcon(wordLayout.wordIcon, word.photoFilePath)
 

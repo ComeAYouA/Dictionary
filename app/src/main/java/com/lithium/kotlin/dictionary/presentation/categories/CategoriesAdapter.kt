@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import com.lithium.kotlin.dictionary.domain.models.Category
 
 private val colors = arrayOf(R.color.purple_200, R.color.purple_500, R.color.purple_700)
 

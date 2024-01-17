@@ -1,11 +1,11 @@
-package com.lithium.kotlin.dictionary.data.repositories.database
+package com.lithium.kotlin.dictionary.domain.repository
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Word
+import com.lithium.kotlin.dictionary.domain.models.Category
+import com.lithium.kotlin.dictionary.domain.models.Word
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

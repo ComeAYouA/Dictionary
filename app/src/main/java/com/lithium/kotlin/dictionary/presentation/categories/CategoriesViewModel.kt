@@ -2,17 +2,19 @@ package com.lithium.kotlin.dictionary.presentation.categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
-import com.lithium.kotlin.dictionary.data.repositories.WordsRepository
+import com.lithium.kotlin.dictionary.domain.models.Category
+import com.lithium.kotlin.dictionary.data.repository.WordsRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CategoriesViewModel: ViewModel() {
-    private val repository = WordsRepository.get()
+class CategoriesViewModel @Inject constructor(
+    private val repository: WordsRepositoryImpl
+): ViewModel() {
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(listOf())
     val categories: StateFlow<List<Category>> = _categories.asStateFlow()
 

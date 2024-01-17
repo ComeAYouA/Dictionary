@@ -5,27 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.domain.localdatabasemodels.Category
+import com.lithium.kotlin.dictionary.appComponent
+import com.lithium.kotlin.dictionary.domain.models.Category
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "CategoriesFragment"
 
 class CategoriesFragment: Fragment() {
 
-    private val viewModel: CategoriesViewModel by lazy {
-        ViewModelProvider(this)[CategoriesViewModel::class.java]
-    }
+    @Inject
+    lateinit var viewModel: CategoriesViewModel
     private lateinit var categoriesRecyclerView: RecyclerView
     private lateinit var categoriesAdapter: CategoriesAdapter
     private var callBacks: CallBacks? = null
@@ -35,8 +32,9 @@ class CategoriesFragment: Fragment() {
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
+        context.appComponent.categoriesComponent().inject(this)
 
+        super.onAttach(context)
         callBacks = context as CallBacks?
     }
 
