@@ -9,9 +9,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.models.Category
-import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment
-import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment
-import com.lithium.kotlin.dictionary.presentation.word.AddWordFragment
+import com.lithium.kotlin.dictionary.presentation.categories.sreen.CategoriesFragment
+import com.lithium.kotlin.dictionary.presentation.dictionary.screen.DictionaryFragment
+import com.lithium.kotlin.dictionary.presentation.word.screen.AddWordFragment
 import java.util.*
 
 

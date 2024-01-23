@@ -1,7 +1,8 @@
-package com.lithium.kotlin.dictionary.presentation.categories
+package com.lithium.kotlin.dictionary.presentation.categories.sreen
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,16 +24,17 @@ class CategoriesFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: CategoriesViewModel
+    @Inject
+    lateinit var categoriesAdapter: CategoriesAdapter
     private lateinit var categoriesRecyclerView: RecyclerView
-    private lateinit var categoriesAdapter: CategoriesAdapter
-    private var callBacks: CallBacks? = null
+    var callBacks: CallBacks? = null
 
     interface CallBacks {
         fun onCategoryClicked(category: Category)
     }
 
     override fun onAttach(context: Context) {
-        context.appComponent.categoriesComponent().inject(this)
+        context.appComponent.categoriesComponent().create(this).inject(this)
 
         super.onAttach(context)
         callBacks = context as CallBacks?
@@ -40,9 +42,9 @@ class CategoriesFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadCategories()
 
-        categoriesAdapter = CategoriesAdapter(callBacks, layoutInflater)
+
+        viewModel.loadCategories()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){

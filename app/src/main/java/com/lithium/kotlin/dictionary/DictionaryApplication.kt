@@ -3,12 +3,10 @@ package com.lithium.kotlin.dictionary
 import android.app.Application
 import android.content.Context
 import com.lithium.kotlin.dictionary.data.di.RepositoryModule
-import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment
-import com.lithium.kotlin.dictionary.presentation.di.AddWordComponent
-import com.lithium.kotlin.dictionary.presentation.di.CategoriesFragmentComponent
-import com.lithium.kotlin.dictionary.presentation.di.DictionaryFragmentComponent
-import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment
-import com.lithium.kotlin.dictionary.presentation.word.AddWordFragment
+import com.lithium.kotlin.dictionary.domain.di.UseCaseModule
+import com.lithium.kotlin.dictionary.presentation.word.AddWordComponent
+import com.lithium.kotlin.dictionary.presentation.categories.CategoriesComponent
+import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryComponent
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Scope
@@ -18,11 +16,11 @@ import javax.inject.Scope
 annotation class AppScope
 
 @AppScope
-@Component(modules = [RepositoryModule::class])
+@Component(modules = [RepositoryModule::class, UseCaseModule::class])
 interface AppComponent{
-    fun dictionaryComponent(): DictionaryFragmentComponent
-    fun categoriesComponent(): CategoriesFragmentComponent
-    fun addWordComponent(): AddWordComponent
+    fun dictionaryComponent(): DictionaryComponent.Factory
+    fun categoriesComponent(): CategoriesComponent.Factory
+    fun addWordComponent(): AddWordComponent.Factory
 
     @Component.Builder
     interface Builder {
@@ -36,13 +34,14 @@ interface AppComponent{
 
 class DictionaryApplication: Application() {
 
-    lateinit var appComponent: AppComponent
+    val appComponent: AppComponent by lazy {
+        DaggerAppComponent.builder()
+            .context(this)
+            .build()
+    }
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.builder()
-            .context(this)
-            .build()
     }
 }
 

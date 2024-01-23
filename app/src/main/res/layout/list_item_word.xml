@@ -5,10 +5,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.lithium.kotlin.dictionary.presentation.dictionary.WordViewModel" />
+            type="com.lithium.kotlin.dictionary.presentation.dictionary.screen.WordViewModel" />
     </data>
 
-    <com.lithium.kotlin.dictionary.presentation.dictionary.worditem.WordItemView
+    <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.WordItemView
         android:id="@+id/word_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,12 +28,12 @@
             android:layout_height="wrap_content"
             android:ems="10" />
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.worditem.EllipticalListView
+        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.EllipticalListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.worditem.EllipticalListView
+        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.EllipticalListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:backColor="@color/purple_700" />
@@ -43,6 +43,6 @@
 <!--            android:layout_height="match_parent"-->
 <!--            android:text="Удалить" />-->
 
-    </com.lithium.kotlin.dictionary.presentation.dictionary.worditem.WordItemView>
+    </com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.WordItemView>
 
 </layout>

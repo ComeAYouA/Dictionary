@@ -1,5 +1,6 @@
-package com.lithium.kotlin.dictionary.presentation.word
+package com.lithium.kotlin.dictionary.presentation.word.screen
 
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,18 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
+import com.lithium.kotlin.dictionary.presentation.word.AddWordFragmentScope
+import javax.inject.Inject
 
-class DeletableItemsListAdapter(
+
+@AddWordFragmentScope
+class DeletableItemsListAdapter @Inject constructor(
     private val layoutInflater: LayoutInflater
 ) {
+
+    init {
+        Log.d("myTag", "DeletableItemsListAdapter init")
+    }
 
     inner class DeletableItemHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(translation: String) {

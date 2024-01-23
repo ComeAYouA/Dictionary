@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen
 
 import android.content.Context
 import android.widget.ImageView
@@ -7,9 +7,11 @@ import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.models.Word
+import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragmentScope
 import com.squareup.picasso.Picasso
 import java.io.File
 
+@DictionaryFragmentScope
 class WordViewModel(private val context: Context): BaseObservable() {
     var word: Word? = null
         set(word) {

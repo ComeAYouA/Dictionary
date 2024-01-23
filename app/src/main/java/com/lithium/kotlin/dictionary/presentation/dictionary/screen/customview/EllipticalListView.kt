@@ -1,22 +1,20 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.worditem
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Color.DKGRAY
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.withStyledAttributes
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.utils.BitmapUtils
+import com.lithium.kotlin.dictionary.presentation.dictionary.utils.BitmapUtils
 import java.lang.Integer.max
 
 class EllipticalListView @JvmOverloads constructor(

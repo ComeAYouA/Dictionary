@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.word
+package com.lithium.kotlin.dictionary.presentation.word.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -19,21 +18,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lithium.kotlin.dictionary.DaggerAppComponent
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.appComponent
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
 import com.lithium.kotlin.dictionary.domain.models.Word
-import com.lithium.kotlin.dictionary.presentation.di.AddWordFragmentScope
+import com.lithium.kotlin.dictionary.presentation.word.screen.DeletableItemsListAdapter.DeletableItemAdapter
 import com.squareup.picasso.Picasso
-import java.io.File
-import java.util.*
-import com.lithium.kotlin.dictionary.presentation.word.DeletableItemsListAdapter.DeletableItemAdapter
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
+
 
 private const val PICK_IMAGE_AVATAR = 0
 
-@AddWordFragmentScope
 class AddWordFragment: Fragment() {
 
     interface CallBacks{
@@ -41,17 +39,19 @@ class AddWordFragment: Fragment() {
         fun onAddWordButtonClicked()
     }
 
-
-    private lateinit var binding : FragmentWordBinding
     @Inject
     lateinit var  viewModel: AddWordViewModel
-    private lateinit var deletableItemListAdapter: DeletableItemsListAdapter
-    private var callBacks: CallBacks? = null
+    @Inject
+    lateinit var deletableItemListAdapter: DeletableItemsListAdapter
 
+    private var _binding: FragmentWordBinding? = null
+    private val binding get() = _binding!!
+
+    private var callBacks: CallBacks? = null
     private var iconPath: String = ""
 
     override fun onAttach(context: Context) {
-        context.appComponent.addWordComponent().inject(this)
+        context.appComponent.addWordComponent().create(this).inject(this)
 
         super.onAttach(context)
         callBacks = context as CallBacks?
@@ -60,7 +60,6 @@ class AddWordFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        deletableItemListAdapter = DeletableItemsListAdapter(layoutInflater)
         viewModel.loadCategories()
         setupObservers()
 
@@ -71,7 +70,7 @@ class AddWordFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = DataBindingUtil.inflate(
+        _binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_word,
             container,
@@ -96,14 +95,17 @@ class AddWordFragment: Fragment() {
         setupWordIconListener()
     }
 
+    override fun onDestroyView() {
+
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDetach() {
         super.onDetach()
 
         callBacks = null
     }
-
-
-
     private fun setupObservers(){
         lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {

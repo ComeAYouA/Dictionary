@@ -1,6 +1,7 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -8,14 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
 import com.lithium.kotlin.dictionary.domain.models.Word
+import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragmentScope
+import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryQualifier
+import javax.inject.Inject
 
-
-class DictionaryAdapter(
-    private val context: Context,
-    private val callBacks: DictionaryFragment.CallBacks?,
-    private val layoutInflater: LayoutInflater
+@DictionaryFragmentScope
+class DictionaryAdapter @Inject constructor(
+    @DictionaryQualifier private val context: Context,
+    @DictionaryQualifier private val callBacks: DictionaryFragment.CallBacks?,
+    @DictionaryQualifier private val layoutInflater: LayoutInflater
 ){
-
+    init {
+        Log.d("myTag", "DictionaryAdapter init")
+    }
     inner class WordHolder(private val binding: ListItemWordBinding): RecyclerView.ViewHolder(binding.root){
         init {
             binding.viewModel = WordViewModel(context = context)

@@ -1,5 +1,6 @@
-package com.lithium.kotlin.dictionary.presentation.categories
+package com.lithium.kotlin.dictionary.presentation.categories.sreen
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,22 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.models.Category
+import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragmentQualifier
+import com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragmentScope
+import javax.inject.Inject
 
 private val colors = arrayOf(R.color.purple_200, R.color.purple_500, R.color.purple_700)
 
-class CategoriesAdapter(
-    private val callBacks: CategoriesFragment.CallBacks?,
-    private val layoutInflater: LayoutInflater
+@CategoriesFragmentScope
+class CategoriesAdapter @Inject constructor(
+    @CategoriesFragmentQualifier private val callBacks: CategoriesFragment.CallBacks?,
+    @CategoriesFragmentQualifier private val layoutInflater: LayoutInflater
 ) {
+
+    init {
+        Log.d("myTag", "CategoriesAdapter init")
+    }
+
     inner class CategoryHolder(private val item: View) : RecyclerView.ViewHolder(item){
 
         fun bind(category: Category, colorRow: Int){

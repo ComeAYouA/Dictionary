@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/dictionaryFragment"
-        android:name="com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.dictionary.screen.DictionaryFragment"
         android:label="Dictionary"
         tools:layout="@layout/fragment_dictionary" >
         <argument
@@ -19,13 +19,13 @@
 
     <fragment
         android:id="@+id/categoriesFragment"
-        android:name="com.lithium.kotlin.dictionary.presentation.categories.CategoriesFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.categories.sreen.CategoriesFragment"
         android:label="Categories"
         tools:layout="@layout/fragment_categories" />
 
     <fragment
         android:id="@+id/editWordFragment"
-        android:name="com.lithium.kotlin.dictionary.presentation.word.AddWordFragment"
+        android:name="com.lithium.kotlin.dictionary.presentation.word.screen.AddWordFragment"
         android:label="EditWord"
         tools:layout="@layout/fragment_word">
         <argument

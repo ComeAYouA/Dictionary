@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.worditem
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview
 
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator

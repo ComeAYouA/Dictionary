@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.utils
+package com.lithium.kotlin.dictionary.presentation.dictionary.utils
 
 import android.content.Context
 import android.graphics.Bitmap

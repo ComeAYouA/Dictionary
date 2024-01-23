@@ -1,9 +1,10 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen
 
 import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,21 +28,24 @@ private val PERMISSIONS = arrayOf(
 )
 private const val MY_PERMISSION_ID = 1234
 
-
 class DictionaryFragment: Fragment() {
 
     interface CallBacks{ fun onWordClicked(wordId: UUID) }
 
-    private lateinit var binding: FragmentDictionaryBinding
+    private var _binding: FragmentDictionaryBinding? = null
+    private val binding get() = _binding!!
+
     @Inject
     lateinit var viewModel : DictionaryViewModel
-    private lateinit var dictionaryAdapter: DictionaryAdapter
+    @Inject
+    lateinit var dictionaryAdapter: DictionaryAdapter
+
     private val args: DictionaryFragmentArgs by navArgs()
-    private var callBacks: CallBacks? = null
+    var callBacks: CallBacks? = null
 
 
-    override fun onAttach(context: Context) {
-        context.appComponent.dictionaryComponent().inject(this)
+    override fun onAttach(context: Context){
+        context.appComponent.dictionaryComponent().create(this).inject(this)
 
         super.onAttach(context)
         callBacks = context as CallBacks?
@@ -52,9 +56,6 @@ class DictionaryFragment: Fragment() {
 
         setupData()
         setupObservers()
-
-
-
     }
 
     override fun onCreateView(
@@ -62,14 +63,12 @@ class DictionaryFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding  = DataBindingUtil.inflate(
+        _binding  = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_dictionary,
             container,
             false
         )
-
-
 
         return binding.root
     }
@@ -90,6 +89,12 @@ class DictionaryFragment: Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
+    }
+
     override fun onDetach() {
         super.onDetach()
         callBacks = null
@@ -103,7 +108,6 @@ class DictionaryFragment: Fragment() {
 
     private fun setupObservers(){
         lifecycleScope.launch {
-            dictionaryAdapter = DictionaryAdapter(requireContext(), callBacks, layoutInflater)
 
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.tempWords.collect {
