@@ -5,6 +5,15 @@ import com.lithium.kotlin.dictionary.domain.models.Category
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -14,27 +23,53 @@ class AddWordToDictionaryUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(word: Word) {
+        withContext(dispatcher){
+            wordDataBase.addWord(word)
 
-        withContext(dispatcher) {
-            wordDataBase.getCategories().collect { categories ->
+            var categories = listOf<Category>()
 
-                val categoriesNames = categories.map { it.name }
-
-                wordDataBase.addWord(word)
-
-                word.categories.forEach {
-                    if (!categoriesNames.contains(it)) {
-                        wordDataBase.addCategory(Category(it, mutableSetOf(word.id)))
-                    }
+            val getCategoriesJob =  launch(dispatcher) {
+                wordDataBase.getCategories().cancellable().collect{
+                    categories = it
+                    this.coroutineContext.cancel()
                 }
-                categories.forEach{
-                    if (word.categories.contains(it.name)){
-                        if (!it.ids.contains(word.id)){
-                            it.ids.add(word.id)
-                            wordDataBase.updateCategory(it)
-                        }
-                    }
-                }
+            }
+
+            getCategoriesJob.join()
+
+            val categoriesNames = categories.map { it.name }
+
+            updateCategoriesWordsIdsList(word, categories)
+            updateCategoriesList(word, categoriesNames)
+        }
+    }
+
+    private suspend fun updateCategoriesList(word: Word, categoriesNames: List<String>){
+        word.categories.forEach { selectedWordCategoryName ->
+
+            if (!categoriesNames.contains(selectedWordCategoryName)){
+                wordDataBase.addCategory(
+                    Category(
+                        selectedWordCategoryName
+                    )
+                )
+            }
+
+        }
+    }
+
+    private suspend fun updateCategoriesWordsIdsList(word: Word, categories: List<Category>){
+        categories.forEach { category ->
+
+            if(category.ids.contains(word.id)){
+                category.ids.add(word.id)
+
+                wordDataBase.updateCategory(
+                    category.copy(
+                        ids = category.ids
+                    )
+                )
+
             }
         }
     }

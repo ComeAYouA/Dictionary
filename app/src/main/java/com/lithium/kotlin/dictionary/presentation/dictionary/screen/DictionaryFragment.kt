@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,9 +100,7 @@ class DictionaryFragment: Fragment() {
     }
 
     private fun setupData(){
-        args.ids?.let { ids ->
-            viewModel.load(ids.toList().map { id -> id.uuid })
-        } ?:viewModel.load()
+       viewModel.loadDictionary()
     }
 
     private fun setupObservers(){
@@ -135,7 +132,7 @@ class DictionaryFragment: Fragment() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let { viewModel.search(it) }
+                    newText?.let { viewModel.searchWord(it) }
                     return true
                 }
 

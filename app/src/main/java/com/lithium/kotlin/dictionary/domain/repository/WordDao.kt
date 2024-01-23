@@ -14,7 +14,7 @@ interface WordDao {
     @Query("SELECT * FROM word")
     fun getWords(): Flow<List<Word>>
     @Query("SELECT * FROM word WHERE id=(:id)")
-    fun getWord(id: UUID): Flow<Word?>
+    suspend fun getWord(id: UUID): Word?
     @Query("SELECT * FROM word WHERE id IN (:ids)")
     fun getWordsByIds(ids: List<UUID>): Flow<List<Word>>
     @Query("SELECT * FROM category")

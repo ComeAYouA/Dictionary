@@ -60,25 +60,6 @@ class AddWordViewModel @Inject constructor(
         }
     }
 
-    var categories = listOf<Category>()
-    var categoriesNames = listOf<String>()
-
-    fun loadCategories() {
-        viewModelScope.launch {
-            repository.getCategories().flowOn(Dispatchers.IO).collect { _categories ->
-                categories = _categories
-                categoriesNames = categories.map { it.name }
-            }
-        }
-    }
-
-//    fun loadWord(wordId: UUID){
-//        viewModelScope.launch {
-//            repository.getWord(wordId).flowOn(Dispatchers.IO).collect{
-//                    _word.value = it?: Word()
-//                }
-//            }
-//    }
 
 //    fun saveWord(word: Word){
 //        viewModelScope.launch(Dispatchers.IO) {
@@ -102,7 +83,7 @@ class AddWordViewModel @Inject constructor(
 //    }
 
     fun addWord(word: Word){
-        viewModelScope.launch{
+        viewModelScope.launch(Dispatchers.IO){
             addWordToDictionaryUseCase(word)
         }
     }

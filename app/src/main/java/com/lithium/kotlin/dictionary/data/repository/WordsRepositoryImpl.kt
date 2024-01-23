@@ -24,7 +24,7 @@ class WordsRepositoryImpl @Inject constructor(
     private val wordDao = dataBase.wordDao()
 
     override fun getWords() = wordDao.getWords()
-    override fun getWord(id: UUID) = wordDao.getWord(id)
+    override suspend fun getWord(id: UUID) = wordDao.getWord(id)
     override fun getWordsByIds(ids: List<UUID>) = wordDao.getWordsByIds(ids)
 
     override fun getCategories() = wordDao.getCategories()

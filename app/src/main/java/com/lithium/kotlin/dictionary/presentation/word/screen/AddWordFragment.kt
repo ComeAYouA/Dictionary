@@ -18,7 +18,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.lithium.kotlin.dictionary.DaggerAppComponent
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.appComponent
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
@@ -60,9 +59,7 @@ class AddWordFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadCategories()
         setupObservers()
-
     }
     override fun onCreateView(
         inflater: LayoutInflater,
