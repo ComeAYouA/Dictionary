@@ -1,6 +1,7 @@
 package com.lithium.kotlin.dictionary.presentation.word.screen
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -11,6 +12,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -25,11 +28,9 @@ import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.presentation.word.screen.DeletableItemsListAdapter.DeletableItemAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 
-private const val PICK_IMAGE_AVATAR = 0
 
 class AddWordFragment: Fragment() {
 
@@ -42,24 +43,40 @@ class AddWordFragment: Fragment() {
     lateinit var  viewModel: AddWordViewModel
     @Inject
     lateinit var deletableItemListAdapter: DeletableItemsListAdapter
+    @Inject
+    lateinit var fragmentHelper: AddWordFragmentHelper
 
     private var _binding: FragmentWordBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
-    private var callBacks: CallBacks? = null
-    private var iconPath: String = ""
+    var callBacks: CallBacks? = null
+
+    private val pickImageIntentLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+            if (result.resultCode == Activity.RESULT_OK){
+                result.data?.data?.let { imageUri ->
+                    viewModel.iconPath = getImageFromPath(imageUri)
+                    Picasso.with(requireContext()).load(viewModel.iconPath).into(binding.newWordIcon)
+                }?:{
+                    Log.d("myTag", "Error while getting image")
+                }
+            }
+        }
 
     override fun onAttach(context: Context) {
-        context.appComponent.addWordComponent().create(this).inject(this)
-
         super.onAttach(context)
         callBacks = context as CallBacks?
+
+        context.appComponent.addWordComponent().create(this).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupObservers()
+        with(fragmentHelper){
+            this@AddWordFragment.setupObservers()
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,22 +91,26 @@ class AddWordFragment: Fragment() {
             false
         )
 
+        fragmentHelper.bindingInit(binding)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupTranslationsRv()
-        setupCategoriesRv()
+        with(fragmentHelper){
+            setupTranslationsRv()
+            setupCategoriesRv()
 
-        setupAddButton()
+            setupAddButton()
 
-        setupWordEditTextListener()
-        setupTranslationsEditTextListener()
-        setupCategoriesEditTextListener()
+            setupWordEditTextListener()
+            setupTranslationsEditTextListener()
+            setupCategoriesEditTextListener()
 
-        setupWordIconListener()
+            setupWordIconListener()
+        }
     }
 
     override fun onDestroyView() {
@@ -103,121 +124,44 @@ class AddWordFragment: Fragment() {
 
         callBacks = null
     }
-    private fun setupObservers(){
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.translate.collect{
-                    (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
-
-                        if(!data.contains(it) && it != "") {
-                            data.add(it)
-                            notifyItemInserted(data.size - 1)
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setupTranslationsRv(){
-        binding.translationRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = deletableItemListAdapter.DeletableItemAdapter(mutableSetOf())
-        }
-    }
-
-    private fun setupCategoriesRv(){
-        binding.categoriesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = deletableItemListAdapter.DeletableItemAdapter(mutableSetOf())
-        }
-    }
-
-    private fun setupAddButton(){
-        binding.addButton.setOnClickListener{
-            val _sequence = binding.wordEditText.text.toString()
-            val _translation = (binding.translationRecyclerView.adapter as DeletableItemAdapter).data
-            val _categories = (binding.categoriesRecyclerView.adapter as DeletableItemAdapter).data
-
-            viewModel.addWord(
-                Word(
-                    sequence = _sequence,
-                    translation = _translation,
-                    categories = _categories,
-                    photoFilePath = iconPath
-                )
-            )
-
-            callBacks?.onAddWordButtonClicked()
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun setupWordEditTextListener(){
-        binding.wordEditText.apply{
-            doAfterTextChanged {
-                if (this.text.toString() == ""){
-                    (binding.translationRecyclerView.adapter as DeletableItemAdapter).apply {
-                        data.clear()
-                        notifyDataSetChanged()
-                    }
-                }
-                viewModel.translateRequest(this.text.toString())
-            }
-        }
-    }
-
-    private fun setupTranslationsEditTextListener(){
-        binding.translationEditText.setOnEditorActionListener{
-                editTextView, actionId, event ->
-            deletableItemListAdapter.addCellToList(binding.translationRecyclerView.adapter as DeletableItemAdapter)(editTextView, actionId, event)
-        }
-    }
-
-    private fun setupCategoriesEditTextListener(){
-        binding.categoriesEditText.setOnEditorActionListener{
-                editTextView, actionId, event ->
-            deletableItemListAdapter.addCellToList(binding.categoriesRecyclerView.adapter as DeletableItemAdapter)(editTextView, actionId, event)
-        }
-    }
 
     private fun setupWordIconListener() {
         binding.newWordIcon.setOnClickListener {
-            startSelectWordIconIntent()
+            startSelectWordIconIntent(pickImageIntentLauncher)
         }
     }
 
-    private fun startSelectWordIconIntent(){
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_PICK
-        startActivityForResult(
-            Intent.createChooser(intent, "Select Picture"),
-            PICK_IMAGE_AVATAR
-        )
+    private fun startSelectWordIconIntent(intentLauncher: ActivityResultLauncher<Intent>){
+        val intent = Intent().apply {
+            type = "image/*"
+            action = Intent.ACTION_PICK
+        }
+        intentLauncher.launch(intent)
     }
 
-    @SuppressLint("Recycle")
-    @Deprecated("Deprecated in Java")
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when{
-            requestCode == PICK_IMAGE_AVATAR && data != null -> {
-                val selectedImage: Uri = data.data!!
-                val c: Cursor = requireActivity().contentResolver.query(selectedImage,null,null,null,null)!!
-                c.moveToFirst()
-                val path: String = c.getString(
-                    if(c.getColumnIndex(MediaStore.MediaColumns.DATA) >= 0){
-                        c.getColumnIndex(MediaStore.MediaColumns.DATA)
-                    }else{
-                        0
-                    }
-                )
-                iconPath = path
-                Picasso.with(requireContext()).load(File(iconPath)).into(binding.newWordIcon)
+    private fun getImageFromPath(selectedImage: Uri): String {
+        val c: Cursor = requireActivity()
+            .contentResolver
+            .query(
+                selectedImage,
+                null,
+                null,
+                null,
+                null
+            )!!
+        c.moveToFirst()
+
+        val path: String = c.getString(
+            if (c.getColumnIndex(MediaStore.MediaColumns.DATA) >= 0) {
+                c.getColumnIndex(MediaStore.MediaColumns.DATA)
+            } else {
+                0
             }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
+        )
+
+        c.close()
+
+        return path
     }
 }

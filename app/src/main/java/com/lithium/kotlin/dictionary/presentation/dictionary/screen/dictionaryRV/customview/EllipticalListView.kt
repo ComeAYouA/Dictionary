@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -28,22 +28,15 @@ class EllipticalListView @JvmOverloads constructor(
             requestLayout()
         }
 
-    var expanded = false
-        set(value) {
-            field = value
-            requestLayout()
-        }
-
+    private var bounds = Rect()
     private var itemsMeasurement = listOf<Pair<Int, Int>>()
     private var itemsLayout = listOf<Pair<Float, Float>>()
-    private var bounds = Rect()
 
     private var backColor = 0
 
-
     private var tSize = 42f
 
-    private val itemsPadding = 32
+    private val itemsSpace = 32
     private var maxH = 40
     private var internalPadding = 8
 
@@ -55,11 +48,6 @@ class EllipticalListView @JvmOverloads constructor(
     private val backPaint = Paint().apply {
         isAntiAlias = true
         color = backColor
-    }
-    private val imagePaint = Paint().apply {
-        isAntiAlias = true
-        isFilterBitmap = true
-        isDither = true
     }
     
     private var bitmap: Bitmap? = null
@@ -83,7 +71,6 @@ class EllipticalListView @JvmOverloads constructor(
 
         var countOfLines = 1
         var currentLineLength = 0
-        var maxWidth = 0
 
         val specWidth = MeasureSpec.getSize(widthMeasureSpec)
 
@@ -101,39 +88,20 @@ class EllipticalListView @JvmOverloads constructor(
 
             outOfBoundsCheck()
 
-            maxWidth = max(maxWidth, currentLineLength)
+            if (idx != items.lastIndex) currentLineLength += itemsSpace
 
-            if (idx != items.lastIndex) currentLineLength += itemsPadding
+            val boundsWidth = bounds.width()
+            val boundsHeight = bounds.height()
 
-            val bWidth = bounds.width()
-            val bHeight = bounds.height()
+            maxH = max(maxH, boundsHeight)
 
-            maxH = max(maxH, bHeight)
-
-            Pair(bWidth, bHeight)
+            Pair(boundsWidth, boundsHeight)
         }
 
-
-        maxWidth = max(maxWidth, currentLineLength)
-
-        if (expanded) {
-            currentLineLength += bitmap!!.width + 20 + itemsPadding
-
-            bounds.set(
-                Rect(0,
-                    bitmap!!.width + 20 + itemsPadding,
-                    0, 0)
-            )
-
-            outOfBoundsCheck()
-
-            maxWidth = max(maxWidth, currentLineLength)
-        }
-
-        val viewHeight = (maxH + internalPadding * 3) * countOfLines + itemsPadding / 2 * (countOfLines - 1)
+        val viewHeight = (maxH + internalPadding * 3) * countOfLines + itemsSpace / 2 * (countOfLines - 1)
 
         setMeasuredDimension(
-            MeasureSpec.getSize(maxWidth),
+            widthMeasureSpec,
             MeasureSpec.getSize(viewHeight)
         )
     }
@@ -148,14 +116,14 @@ class EllipticalListView @JvmOverloads constructor(
         fun outOfBoundsCheck(idx: Int){
             if (startX + itemsMeasurement[idx + 1].first + internalPadding > this.measuredWidth){
                 startX = internalPadding.toFloat()
-                startY += maxH + itemsPadding/2 + internalPadding * 3
+                startY += maxH + itemsSpace/2 + internalPadding * 3
             }
         }
 
         itemsLayout = items.mapIndexed { idx, str ->
             val resXY = Pair(startX, startY)
 
-            startX += itemsMeasurement[idx].first + itemsPadding
+            startX += itemsMeasurement[idx].first + itemsSpace
 
             if (idx != items.lastIndex){
                 outOfBoundsCheck(idx)
@@ -166,72 +134,34 @@ class EllipticalListView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        drawItems(canvas)
-        drawEditButton(canvas)
-    }
+        itemsLayout.forEachIndexed { idx, xy ->
 
-    private fun drawItems(canvas: Canvas){
-        itemsLayout.forEachIndexed { idx, XY ->
+            drawTextBackground(canvas, xy, idx)
 
-            canvas.drawRoundRect(
-                XY.first - internalPadding,
-                XY.second - maxH - internalPadding,
-                XY.first + itemsMeasurement[idx].first.toFloat() + internalPadding,
-                XY.second + internalPadding * 2,
-                10f, 10f,
-                backPaint
-            )
-
-            canvas.drawText(
-                items[idx],
-                0,
-                items[idx].length,
-                XY.first,
-                XY.second,
-                textPaint
-            )
+            drawText(canvas, xy, idx)
         }
     }
 
-    private fun drawEditButton(canvas: Canvas){
-        var startX: Float
-
-        if (itemsLayout.isEmpty()){
-            startX = internalPadding.toFloat()
-        } else{
-            startX = itemsLayout.last().first
-            startX += itemsMeasurement.last().first + itemsPadding
-        }
-
-        var startY = if (itemsLayout.isEmpty()){
-            maxH + internalPadding.toFloat()
-        } else{
-            itemsLayout.last().second
-        }.toFloat()
-
-
-        if (startX + bitmap!!.width > this.measuredWidth){
-            startX = internalPadding.toFloat()
-            startY += maxH + 20f + internalPadding * 3
-        }
-
-        if (expanded){
-            canvas.drawBitmap(bitmap!!, startX, startY - bitmap!!.height + internalPadding.toFloat() * 2,  imagePaint)
-        }
-    }
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when (event?.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                performClick()
-            }
-        }
-        return super.onTouchEvent(event)
+    private fun drawTextBackground(canvas: Canvas, xy: Pair<Float, Float>, textIdx: Int){
+        canvas.drawRoundRect(
+            xy.first - internalPadding,
+            xy.second - maxH - internalPadding,
+            xy.first + itemsMeasurement[textIdx].first.toFloat() + internalPadding,
+            xy.second + internalPadding * 2,
+            10f, 10f,
+            backPaint
+        )
     }
 
-    override fun performClick(): Boolean {
-        val toast = Toast.makeText(context, "Click", Toast.LENGTH_SHORT)
-        toast.show()
-        return super.performClick()
+    private fun drawText(canvas: Canvas, xy: Pair<Float, Float>, textIdx: Int){
+        canvas.drawText(
+            items[textIdx],
+            0,
+            items[textIdx].length,
+            xy.first,
+            xy.second,
+            textPaint
+        )
     }
 }
 

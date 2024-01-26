@@ -5,10 +5,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.lithium.kotlin.dictionary.presentation.dictionary.screen.WordViewModel" />
+            type="com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.WordViewModel" />
     </data>
 
-    <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.WordItemView
+    <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.WordItemView
         android:id="@+id/word_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,21 +28,24 @@
             android:layout_height="wrap_content"
             android:ems="10" />
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.EllipticalListView
+        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.EllipticalListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.EllipticalListView
+        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.EllipticalListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:backColor="@color/purple_700" />
 
-<!--        <Button-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:text="Удалить" />-->
+        <ImageButton
+            android:id="@+id/gear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_gear___"
+            android:background="@null"
+            />
 
-    </com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview.WordItemView>
+    </com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.WordItemView>
 
 </layout>

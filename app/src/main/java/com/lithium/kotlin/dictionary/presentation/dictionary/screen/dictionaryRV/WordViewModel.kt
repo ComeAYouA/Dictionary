@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.screen
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV
 
 import android.content.Context
 import android.widget.ImageView
@@ -38,4 +38,5 @@ class WordViewModel(private val context: Context): BaseObservable() {
             Picasso.with(context).load(R.drawable.ic_empty_picture).resize(170, 170).into(imageView)
         }
     }
+
 }

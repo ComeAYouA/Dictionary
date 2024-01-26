@@ -10,6 +10,7 @@ import com.lithium.kotlin.dictionary.domain.api.TranslateBody
 import com.lithium.kotlin.dictionary.domain.models.Category
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
+import com.lithium.kotlin.dictionary.domain.usecases.TranslateEnteredWordUseCase
 import com.lithium.kotlin.dictionary.presentation.word.AddWordFragmentScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,9 +26,8 @@ import javax.inject.Inject
 
 @AddWordFragmentScope
 class AddWordViewModel @Inject constructor(
-    private val repository: WordDao,
-    private val translateApi: TranslateApi,
-    private val addWordToDictionaryUseCase: AddWordToDictionaryUseCase
+    private val addWordToDictionaryUseCase: AddWordToDictionaryUseCase,
+    private val translateEnteredWordUseCase: TranslateEnteredWordUseCase
 ): ViewModel(){
 
     init {
@@ -40,50 +40,15 @@ class AddWordViewModel @Inject constructor(
     private val _translate: MutableStateFlow<String> = MutableStateFlow("")
     val translate: StateFlow<String> = _translate.asStateFlow()
 
-    private val translationRequestsContext = SupervisorJob() + Dispatchers.IO
+    var iconPath = ""
 
     fun translateRequest(word: String) {
-        translationRequestsContext.cancelChildren()
-
-        viewModelScope.launch(translationRequestsContext) {
-            val body = TranslateBody(q = word)
-            delay(3000)
-
-            if (isActive) {
-                try{
-                    val result = translateApi.translate(body)
-                    _translate.value = result.translatedText
-                }catch (e: Exception){
-                    Log.d("request", e.toString())
-                }
-            }
+        viewModelScope.launch {
+            _translate.value = translateEnteredWordUseCase(word)
         }
     }
-
-
-//    fun saveWord(word: Word){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.updateWord(word)
-//
-//            word.categories.forEach {
-//                if (!categoriesNames.contains(it)) {
-//                    repository.addCategory(Category(it, mutableSetOf(word.id)))
-//                }
-//            }
-//
-//            categories.forEach{
-//                if (word.categories.contains(it.name)){
-//                    if (!it.ids.contains(word.id)){
-//                        it.ids.add(word.id)
-//                        repository.updateCategory(it)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     fun addWord(word: Word){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch{
             addWordToDictionaryUseCase(word)
         }
     }

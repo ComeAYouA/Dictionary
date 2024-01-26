@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.screen.customview
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview
 
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
@@ -22,6 +22,8 @@ class WordItemView @JvmOverloads constructor(
         get() = getChildAt(2) as EllipticalListView
     val categoriesEllipticalListView : EllipticalListView
         get() = getChildAt(3) as EllipticalListView
+    val gearIcon : ImageButton
+        get() = getChildAt(4) as ImageButton
 
 
     private var expanded = false
@@ -52,11 +54,16 @@ class WordItemView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
-        val iconSize = 150
+        val wordIconSize = 150
 
         wordIcon.measure(
-            MeasureSpec.makeMeasureSpec(iconSize, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(iconSize, MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(wordIconSize, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(wordIconSize, MeasureSpec.EXACTLY)
+        )
+
+        gearIcon.measure(
+            MeasureSpec.makeMeasureSpec(75, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec( 75, MeasureSpec.EXACTLY)
         )
 
         val wordEditTextWidth = MeasureSpec.getSize(widthMeasureSpec) - (wordIcon.measuredWidth + horizontalItemsSpace/2 + horizontalItemsSpace * 2)
@@ -74,7 +81,7 @@ class WordItemView @JvmOverloads constructor(
         )
 
         categoriesEllipticalListView.measure(
-            MeasureSpec.makeMeasureSpec(wordEditText.measuredWidth, MeasureSpec.AT_MOST),
+            MeasureSpec.makeMeasureSpec(wordEditText.measuredWidth - gearIcon.measuredWidth - verticalItemsSpace, MeasureSpec.AT_MOST),
             MeasureSpec.makeMeasureSpec(verticalHConstraints, MeasureSpec.AT_MOST)
         )
 
@@ -125,14 +132,21 @@ class WordItemView @JvmOverloads constructor(
             categoriesTop
         )
 
+        if (expanded){
+            gearIcon.layout(
+                leftMargin + categoriesEllipticalListView.measuredWidth + horizontalItemsSpace,
+                categoriesBottom,
+                leftMargin + categoriesEllipticalListView.measuredWidth + gearIcon.measuredWidth + horizontalItemsSpace,
+                categoriesBottom + gearIcon.measuredHeight
+            )
+        }
+
     }
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         return !expanded
     }
     override fun performClick(): Boolean {
         expanded = !expanded
-        categoriesEllipticalListView.expanded = !categoriesEllipticalListView.expanded
-        translationsEllipticalListView.expanded = !translationsEllipticalListView.expanded
         animator.start()
 
         return super.performClick()
@@ -140,8 +154,6 @@ class WordItemView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         expanded = false
-        categoriesEllipticalListView.expanded = false
-        translationsEllipticalListView.expanded = false
         animatedExpandedSpace = 0
 
         super.onDetachedFromWindow()

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
+import com.lithium.kotlin.dictionary.domain.usecases.SearchWordsUseCase
 import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragmentScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @DictionaryFragmentScope
 class DictionaryViewModel @Inject constructor(
-    private val repository: WordDao
+    private val repository: WordDao,
+    private val searchWordsUseCase: SearchWordsUseCase
 ): ViewModel() {
 
     init {
@@ -41,14 +43,7 @@ class DictionaryViewModel @Inject constructor(
     fun searchWord(input: String) {
         viewModelScope.launch {
             if (input.isNotEmpty()) {
-                _tempWords.value = _words.value.fold(mutableListOf()) { acc, w ->
-
-                    if (w.sequence.contains(input)) {
-                        acc.add(w)
-                    }
-
-                    acc
-                }
+                _tempWords.value = searchWordsUseCase(input, _words.value)
             }else{
                 _tempWords.value = words.value
             }

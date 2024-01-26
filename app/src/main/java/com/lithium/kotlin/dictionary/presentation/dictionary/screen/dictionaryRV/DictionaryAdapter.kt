@@ -1,4 +1,4 @@
-package com.lithium.kotlin.dictionary.presentation.dictionary.screen
+package com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV
 
 import android.content.Context
 import android.util.Log
@@ -11,6 +11,7 @@ import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryFragmentScope
 import com.lithium.kotlin.dictionary.presentation.dictionary.DictionaryQualifier
+import com.lithium.kotlin.dictionary.presentation.dictionary.screen.DictionaryFragment
 import javax.inject.Inject
 
 @DictionaryFragmentScope

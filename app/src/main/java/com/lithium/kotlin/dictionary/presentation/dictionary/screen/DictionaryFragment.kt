@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.appComponent
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
+import com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.DictionaryAdapter
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
