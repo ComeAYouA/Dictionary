@@ -5,4 +5,6 @@
     <string name="translation">Translation</string>
     <string name="add_button">Add</string>
     <string name="empty"></string>
+    <string name="no_translation">Нет перевода</string>
+    <string name="no_categories">Нет категорий</string>
 </resources>

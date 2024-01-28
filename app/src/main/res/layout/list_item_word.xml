@@ -2,13 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="viewModel"
-            type="com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.WordViewModel" />
-    </data>
 
-    <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.WordItemView
+    <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.WordItemView
         android:id="@+id/word_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,18 +17,21 @@
             android:src="@drawable/ic_empty_picture"
             android:background="@null"/>
 
-        <EditText
+        <TextView
             android:id="@+id/word_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16dp"
             android:ems="10" />
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.EllipticalListView
+        <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
+            android:id="@+id/translations_elliptical_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
 
-        <com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.EllipticalListView
+        <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
+            android:id="@+id/categories_elliptical_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:backColor="@color/purple_700" />
@@ -46,6 +44,6 @@
             android:background="@null"
             />
 
-    </com.lithium.kotlin.dictionary.presentation.dictionary.screen.dictionaryRV.customview.WordItemView>
+    </com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.WordItemView>
 
 </layout>
