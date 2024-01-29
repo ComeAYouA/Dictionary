@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.appComponent
 import com.lithium.kotlin.dictionary.databinding.DialogFragmentEditWordBinding
+import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.features.add_word.screen.DeletableItemAdapter
 import com.lithium.kotlin.dictionary.utils.DialogWindowUtil
 import com.squareup.picasso.Picasso
@@ -99,6 +100,18 @@ class EditWordDialog: DialogFragment() {
 
     }
 
+    override fun onDestroy() {
+        viewModel.saveWord(
+            viewModel.word.value.copy(
+                sequence = binding.wordEditText.text.toString(),
+                translation = translationsRVAdapter.deletableItemsList,
+                categories = categoriesRVAdapter.deletableItemsList,
+            )
+        )
+
+        super.onDestroy()
+    }
+
     companion object{
         fun newInstance(wordId: UUID): EditWordDialog{
             val args = Bundle().apply {
@@ -115,17 +128,16 @@ class EditWordDialog: DialogFragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.word.collect { word ->
-                    if(word.photoFilePath != ""){
-                        Picasso.with(binding.wordIcon.context)
-                            .load(File(word.photoFilePath))
-                            .resize(240, 240)
-                            .into(binding.wordIcon)
-                    }else{
-                        Picasso.with(binding.wordIcon.context)
-                            .load(R.drawable.ic_empty_picture)
-                            .resize(240, 240)
-                            .into(binding.wordIcon)
+
+                    Picasso.with(binding.wordIcon.context).run {
+                        if (word.photoFilePath != ""){
+                            load(File(word.photoFilePath))
+                        } else {
+                            load(R.drawable.ic_empty_picture)
+                        }
                     }
+                        .resize(240, 240)
+                        .into(binding.wordIcon)
 
                     binding.wordEditText.setText(word.sequence)
 

@@ -24,23 +24,37 @@ class AddWordToDictionaryUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(word: Word) {
         withContext(dispatcher){
-            wordDataBase.addWord(word)
 
-            var categories = listOf<Category>()
+            var words = listOf<String>()
 
-            val getCategoriesJob =  launch(dispatcher) {
-                wordDataBase.getCategories().cancellable().collect{
-                    categories = it
+            val getWordsJob =  launch(dispatcher) {
+                wordDataBase.getWords().cancellable().collect{ wordsList ->
+                    words = wordsList.map { word -> word.sequence }
                     this.coroutineContext.cancel()
                 }
             }
 
-            getCategoriesJob.join()
+            getWordsJob.join()
 
-            val categoriesNames = categories.map { it.name }
+            if (!words.contains(word.sequence)){
+                wordDataBase.addWord(word)
 
-            updateCategoriesWordsIdsList(word, categories)
-            updateCategoriesList(word, categoriesNames)
+                var categories = listOf<Category>()
+
+                val getCategoriesJob =  launch(dispatcher) {
+                    wordDataBase.getCategories().cancellable().collect{
+                        categories = it
+                        this.coroutineContext.cancel()
+                    }
+                }
+
+                getCategoriesJob.join()
+
+                val categoriesNames = categories.map { it.name }
+
+                updateCategoriesWordsIdsList(word, categories)
+                updateCategoriesList(word, categoriesNames)
+            }
         }
     }
 

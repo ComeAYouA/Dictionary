@@ -27,14 +27,15 @@
         <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
             android:id="@+id/translations_elliptical_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:backColor="@color/light_gray_300"/>
 
 
         <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
             android:id="@+id/categories_elliptical_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backColor="@color/purple_700" />
+            app:backColor="@color/light_blue_300" />
 
         <ImageButton
             android:id="@+id/gear_icon"

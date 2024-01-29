@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Dictionary"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".features.NavHostActivity"
+            android:name=".NavHostActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

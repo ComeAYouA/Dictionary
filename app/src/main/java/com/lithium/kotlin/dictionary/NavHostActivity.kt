@@ -1,7 +1,8 @@
-package com.lithium.kotlin.dictionary.features
+package com.lithium.kotlin.dictionary
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -26,6 +27,9 @@ class NavHostActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         setContentView(R.layout.activity_main)
 
         bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
