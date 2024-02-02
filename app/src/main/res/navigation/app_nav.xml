@@ -18,12 +18,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/categoriesFragment"
-        android:name="com.lithium.kotlin.dictionary.features.categories.sreen.CategoriesFragment"
-        android:label="Categories"
-        tools:layout="@layout/fragment_categories" />
-
-    <fragment
         android:id="@+id/editWordFragment"
         android:name="com.lithium.kotlin.dictionary.features.add_word.screen.AddWordFragment"
         android:label="EditWord"
@@ -34,4 +28,9 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+
+    <fragment
+        android:id="@+id/educationalCardsFragment"
+        android:name="com.lithium.kotlin.dictionary.features.educational_cards.screen.EducationalCardsFragment"
+        android:label="EducationalCardsFragment" />
 </navigation>

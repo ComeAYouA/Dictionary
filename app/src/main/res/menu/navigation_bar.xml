@@ -15,7 +15,7 @@
         android:title="Add Word" />
 
     <item
-        android:id="@id/categoriesFragment"
+        android:id="@id/educationalCardsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_navigation_categories"

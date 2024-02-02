@@ -45,10 +45,6 @@ class DictionaryAdapter: RecyclerView.Adapter<WordHolder>(){
         holder.bind(word, onWordEditBlock)
     }
 
-    override fun getItemId(position: Int): Long {
-        return (words[position].id.mostSignificantBits.and(Long.MAX_VALUE))
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun setWords(data: List<Word>){
         words.clear()

@@ -10,7 +10,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.models.Category
-import com.lithium.kotlin.dictionary.features.categories.sreen.CategoriesFragment
 import com.lithium.kotlin.dictionary.features.dictionary.screen.DictionaryFragment
 import com.lithium.kotlin.dictionary.features.add_word.screen.AddWordFragment
 import java.util.*
@@ -18,8 +17,7 @@ import java.util.*
 
 class NavHostActivity : AppCompatActivity(),
     DictionaryFragment.CallBacks,
-    AddWordFragment.CallBacks ,
-    CategoriesFragment.CallBacks {
+    AddWordFragment.CallBacks {
 
     private lateinit var bottomNavigationBar: NavigationBarView
     private lateinit var navController: NavController
@@ -51,6 +49,4 @@ class NavHostActivity : AppCompatActivity(),
         bottomNavigationBar.selectedItemId = R.id.dictionaryFragment
     }
 
-    override fun onCategoryClicked(category: Category) {
-    }
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import com.lithium.kotlin.dictionary.data.di.RepositoryModule
 import com.lithium.kotlin.dictionary.domain.di.UseCaseModule
 import com.lithium.kotlin.dictionary.features.add_word.di.AddWordComponent
-import com.lithium.kotlin.dictionary.features.categories.di.CategoriesComponent
 import com.lithium.kotlin.dictionary.features.dictionary.di.DictionaryComponent
 import com.lithium.kotlin.dictionary.features.edit_word.di.EditWordComponent
 import dagger.BindsInstance
@@ -20,7 +19,6 @@ annotation class AppScope
 @Component(modules = [RepositoryModule::class, UseCaseModule::class])
 interface AppComponent{
     fun dictionaryComponent(): DictionaryComponent.Factory
-    fun categoriesComponent(): CategoriesComponent.Factory
     fun addWordComponent(): AddWordComponent.Factory
     fun editWordComponent(): EditWordComponent.Factory
 
