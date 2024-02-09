@@ -25,13 +25,11 @@
           <li><h3>AndroidX</h3></li>
         </ul>
     </li>
-
     <li><h3>Kotlin Coroutines</h3></li>
     <li><h3>Dagger 2</h3></li>
     <li><h3>Retrofit</h3></li>
     <li><h3>Picasso</h3></li>
     <li><h3>Glide Compose</h3></li>
-
   </ul>
     <hr/>
 
@@ -49,6 +47,6 @@
   </ul>
     <hr/>
 
-  <img src = "D:\GitProjects\Dictionary\preview\img.png" />
+  <img src = "https://github.com/ComeAYouA/Dictionary/blob/main/preview/img.png?raw=true" />
 
 </html>
