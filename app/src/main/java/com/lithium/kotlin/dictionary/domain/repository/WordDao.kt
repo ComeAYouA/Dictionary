@@ -19,6 +19,8 @@ interface WordDao {
     fun getWordsByIds(ids: List<UUID>): Flow<List<Word>>
     @Query("SELECT * FROM category")
     fun getCategories(): Flow<List<Category>>
+    @Query("SELECT * FROM word ORDER BY progression")
+    suspend fun getWordsSortedByProgression(): List<Word>
     @Update
     suspend fun updateWord(word: Word)
     @Update
@@ -27,4 +29,5 @@ interface WordDao {
     suspend fun addWord(word: Word)
     @Insert
     suspend fun addCategory(category: Category)
+
 }

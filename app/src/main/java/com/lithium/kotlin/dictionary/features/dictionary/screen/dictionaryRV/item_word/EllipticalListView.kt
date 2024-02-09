@@ -12,7 +12,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.withStyledAttributes
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.features.dictionary.utils.BitmapUtils
+import com.lithium.kotlin.dictionary.utils.BitmapUtils
 import java.lang.Integer.max
 
 class EllipticalListView @JvmOverloads constructor(

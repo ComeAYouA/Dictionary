@@ -1,4 +1,6 @@
 package com.lithium.kotlin.dictionary.features.educational_cards.di
 
-class EducationalCardsScope {
-}
+import javax.inject.Scope
+
+@Scope
+annotation class EducationalCardsScope

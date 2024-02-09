@@ -28,6 +28,7 @@ class WordsRepositoryImpl @Inject constructor(
     override fun getWordsByIds(ids: List<UUID>) = wordDao.getWordsByIds(ids)
 
     override fun getCategories() = wordDao.getCategories()
+    override suspend fun getWordsSortedByProgression(): List<Word> = wordDao.getWordsSortedByProgression()
 
     init {
         Log.d("myTag", "repository init")

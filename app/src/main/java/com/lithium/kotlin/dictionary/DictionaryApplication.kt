@@ -7,6 +7,7 @@ import com.lithium.kotlin.dictionary.domain.di.UseCaseModule
 import com.lithium.kotlin.dictionary.features.add_word.di.AddWordComponent
 import com.lithium.kotlin.dictionary.features.dictionary.di.DictionaryComponent
 import com.lithium.kotlin.dictionary.features.edit_word.di.EditWordComponent
+import com.lithium.kotlin.dictionary.features.educational_cards.di.EducationalCardsComponent
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Scope
@@ -21,6 +22,7 @@ interface AppComponent{
     fun dictionaryComponent(): DictionaryComponent.Factory
     fun addWordComponent(): AddWordComponent.Factory
     fun editWordComponent(): EditWordComponent.Factory
+    fun educationalCardsComponent(): EducationalCardsComponent.Factory
 
     @Component.Builder
     interface Builder {
