@@ -4,11 +4,6 @@
   <h1 align="center">English-Russian dictionary Android application</h1>
 
   <br/>
-<p align="center">
-  <img src= "https://github.com/ComeAYouA/Dictionary/blob/main/preview.gif"
-    width="260"
-    height="600"/>
-</p>
 
 
   <hr/>
@@ -54,5 +49,13 @@
     <hr/>
 
   <img src = "https://github.com/ComeAYouA/Dictionary/blob/main/preview/img.png?raw=true" />
+
+<h2>App Demo</h2>
+
+<p align="center">
+  <img src= "https://github.com/ComeAYouA/Dictionary/blob/main/preview.gif"
+    width="260"
+    height="600"/>
+</p>
 
 </html>
