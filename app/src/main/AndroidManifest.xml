@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".DictionaryApplication"
+        android:name=".features.main.di.DictionaryApplication"
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Dictionary"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".NavHostActivity"
+            android:name=".features.main.screen.NavHostActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

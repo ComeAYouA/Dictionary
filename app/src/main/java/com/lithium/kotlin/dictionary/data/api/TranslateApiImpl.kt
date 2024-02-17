@@ -14,8 +14,4 @@ annotation class ApiScope
 @ApiScope
 class TranslateApiImpl @Inject constructor(retrofit: Retrofit) {
     val translateApi: TranslateApi = retrofit.create(TranslateApi::class.java)
-
-    init {
-        Log.d("myTag", "api init")
-    }
 }

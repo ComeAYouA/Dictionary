@@ -2,6 +2,7 @@ package com.lithium.kotlin.dictionary.features.dictionary.screen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @DictionaryScope
-class DictionaryViewModel @Inject constructor(
+class DictionaryViewModel(
     private val searchWordsUseCase: SearchWordsUseCase,
     private val getWordsFlowUseCase: GetWordsFlowUseCase
 ): ViewModel() {
@@ -45,10 +46,21 @@ class DictionaryViewModel @Inject constructor(
         viewModelScope.launch {
             if (input.isNotEmpty()) {
                 _tempWords.value = searchWordsUseCase(input, _words.value)
-            }else{
+            } else {
                 _tempWords.value = words.value
             }
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    class Factory @Inject constructor(
+        private val searchWordsUseCase: SearchWordsUseCase,
+        private val getWordsFlowUseCase: GetWordsFlowUseCase
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            require(modelClass == DictionaryViewModel::class.java)
+            return DictionaryViewModel(searchWordsUseCase, getWordsFlowUseCase) as T
+        }
+    }
 }
+

@@ -5,6 +5,8 @@
 
   <br/>
 
+  <img src= preview.gif/>
+
   <hr/>
   <h2>Introduction</h2>
   <h3>This is a simple pet-project designed for educational purposes. The goal of this project is to work with modern tech stack for Android application development as well as improve my knowledge of English language.</h3>

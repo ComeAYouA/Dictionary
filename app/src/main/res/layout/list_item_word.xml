@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
 
-    <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.WordItemView
+    <com.lithium.kotlin.dictionary.common.ui.customviews.WordItemView
         android:id="@+id/word_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,14 +24,14 @@
             android:textSize="16dp"
             android:ems="10" />
 
-        <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
+        <com.lithium.kotlin.dictionary.common.ui.customviews.EllipticalListView
             android:id="@+id/translations_elliptical_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:backColor="@color/light_gray_300"/>
 
 
-        <com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.EllipticalListView
+        <com.lithium.kotlin.dictionary.common.ui.customviews.EllipticalListView
             android:id="@+id/categories_elliptical_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,6 +45,6 @@
             android:background="@null"
             />
 
-    </com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.item_word.WordItemView>
+    </com.lithium.kotlin.dictionary.common.ui.customviews.WordItemView>
 
 </layout>

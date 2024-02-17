@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 @AddWordScope
 class AddWordFragmentBindingAdapter @Inject constructor(
-    private val viewModel: AddWordViewModel,
     private val callBacks: AddWordFragment.CallBacks?
 ) {
 
@@ -33,10 +32,10 @@ class AddWordFragmentBindingAdapter @Inject constructor(
         this._binding = binding
     }
 
-    fun Fragment.setupObservers(){
+    fun Fragment.setupObservers(viewModel: AddWordViewModel){
         lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.translate.collect{ translation ->
+                viewModel.translation.collect{ translation ->
                     translationsRVAdapter.apply {
                         setDeletableItemsList(
                             mutableSetOf(translation)
@@ -71,7 +70,7 @@ class AddWordFragmentBindingAdapter @Inject constructor(
         }
     }
 
-    fun setupAddButton(){
+    fun setupAddButton(viewModel: AddWordViewModel){
         binding.addButton.setOnClickListener{
             val _sequence = binding.wordEditText.text.toString()
             val _translation = translationsRVAdapter.deletableItemsList
@@ -91,7 +90,7 @@ class AddWordFragmentBindingAdapter @Inject constructor(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setupWordEditTextListener(){
+    fun setupWordEditTextListener(viewModel: AddWordViewModel){
         binding.wordEditText.apply{
             doAfterTextChanged {
                 if (this.text.toString() == ""){

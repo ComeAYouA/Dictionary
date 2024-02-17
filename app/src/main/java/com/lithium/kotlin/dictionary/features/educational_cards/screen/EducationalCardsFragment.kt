@@ -7,15 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.lithium.kotlin.dictionary.appComponent
-import com.lithium.kotlin.dictionary.features.educational_cards.screen.educationalCardsWidget.EducationalCard
+import androidx.fragment.app.viewModels
+import com.lithium.kotlin.dictionary.features.main.di.appComponent
 import com.lithium.kotlin.dictionary.features.educational_cards.screen.educationalCardsWidget.EducationalCardWidget
 import javax.inject.Inject
 
 class EducationalCardsFragment: Fragment() {
 
     @Inject
-    lateinit var viewModel: EducationalCardsViewModel
+    lateinit var viewModelFactory: EducationalCardsViewModel.Factory
+
+    private val viewModel: EducationalCardsViewModel by viewModels { viewModelFactory }
 
     override fun onAttach(context: Context) {
         context.appComponent.educationalCardsComponent().create(this).inject(this)

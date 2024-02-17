@@ -9,14 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.appComponent
+import com.lithium.kotlin.dictionary.features.main.di.appComponent
 import com.lithium.kotlin.dictionary.databinding.FragmentDictionaryBinding
-import com.lithium.kotlin.dictionary.features.dictionary.screen.dictionaryRV.DictionaryAdapter
 import com.lithium.kotlin.dictionary.features.edit_word.screen.EditWordDialog
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -37,7 +37,8 @@ class DictionaryFragment: Fragment() {
     private val dictionaryAdapter: DictionaryAdapter by lazy { DictionaryAdapter() }
 
     @Inject
-    lateinit var viewModel : DictionaryViewModel
+    lateinit var viewModelFactory : DictionaryViewModel.Factory
+    private val viewModel: DictionaryViewModel by viewModels { viewModelFactory }
     var callBacks: CallBacks? = null
 
 

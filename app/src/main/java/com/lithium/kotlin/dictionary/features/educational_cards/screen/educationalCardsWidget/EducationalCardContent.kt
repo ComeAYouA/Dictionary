@@ -2,7 +2,6 @@ package com.lithium.kotlin.dictionary.features.educational_cards.screen.educatio
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,10 +26,9 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lithium.kotlin.dictionary.R
 import com.lithium.kotlin.dictionary.domain.models.Word
-import com.lithium.kotlin.dictionary.themes.ui.Light
-import com.lithium.kotlin.dictionary.themes.ui.LightBlue300
-import com.lithium.kotlin.dictionary.themes.ui.LightGreen
-import com.lithium.kotlin.dictionary.themes.ui.Typography
+import com.lithium.kotlin.dictionary.common.ui.Light
+import com.lithium.kotlin.dictionary.common.ui.LightGreen
+import com.lithium.kotlin.dictionary.common.ui.Typography
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

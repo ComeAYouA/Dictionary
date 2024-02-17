@@ -15,10 +15,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.appComponent
+import com.lithium.kotlin.dictionary.features.main.di.appComponent
 import com.lithium.kotlin.dictionary.databinding.FragmentWordBinding
-import com.squareup.picasso.Picasso
+import com.lithium.kotlin.dictionary.utils.WordIconUtil
 import javax.inject.Inject
 
 
@@ -30,10 +31,11 @@ class AddWordFragment: Fragment() {
     }
 
     @Inject
-    lateinit var  viewModel: AddWordViewModel
+    lateinit var  viewModelFactory: AddWordViewModel.Factory
     @Inject
     lateinit var fragmentHelper: AddWordFragmentBindingAdapter
 
+    private val viewModel: AddWordViewModel by viewModels { viewModelFactory }
     private var _binding: FragmentWordBinding? = null
     val binding get() = _binding!!
 
@@ -45,7 +47,10 @@ class AddWordFragment: Fragment() {
             if (result.resultCode == Activity.RESULT_OK){
                 result.data?.data?.let { imageUri ->
                     viewModel.iconPath = getImageFromPath(imageUri)
-                    Picasso.with(requireContext()).load(viewModel.iconPath).into(binding.newWordIcon)
+                    WordIconUtil.loadCorrectWordIcon(
+                        viewModel.iconPath,
+                        binding.newWordIcon
+                    ).into(binding.newWordIcon)
                 }?:{
                     Log.d("myTag", "Error while getting image")
                 }
@@ -63,7 +68,7 @@ class AddWordFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         with(fragmentHelper){
-            this@AddWordFragment.setupObservers()
+            this@AddWordFragment.setupObservers(viewModel)
         }
     }
     override fun onCreateView(
@@ -91,9 +96,9 @@ class AddWordFragment: Fragment() {
             setupTranslationsRv()
             setupCategoriesRv()
 
-            setupAddButton()
+            setupAddButton(viewModel)
 
-            setupWordEditTextListener()
+            setupWordEditTextListener(viewModel)
             setupTranslationsEditTextListener()
             setupCategoriesEditTextListener()
 

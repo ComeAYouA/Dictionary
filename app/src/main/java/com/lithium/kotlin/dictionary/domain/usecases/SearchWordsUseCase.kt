@@ -1,8 +1,7 @@
 package com.lithium.kotlin.dictionary.domain.usecases
 
-import com.lithium.kotlin.dictionary.AppScope
+import com.lithium.kotlin.dictionary.features.main.di.AppScope
 import com.lithium.kotlin.dictionary.domain.models.Word
-import com.lithium.kotlin.dictionary.domain.repository.WordDao
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

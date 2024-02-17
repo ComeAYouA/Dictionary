@@ -1,18 +1,12 @@
 package com.lithium.kotlin.dictionary.domain.usecases
 
-import com.lithium.kotlin.dictionary.AppScope
+import com.lithium.kotlin.dictionary.features.main.di.AppScope
 import com.lithium.kotlin.dictionary.domain.models.Category
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.cancellable
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

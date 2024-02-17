@@ -1,10 +1,7 @@
 package com.lithium.kotlin.dictionary.data.repository
 
 import android.util.Log
-import androidx.room.DatabaseConfiguration
-import androidx.room.InvalidationTracker
-import androidx.sqlite.db.SupportSQLiteOpenHelper
-import com.lithium.kotlin.dictionary.AppScope
+import com.lithium.kotlin.dictionary.features.main.di.AppScope
 import com.lithium.kotlin.dictionary.domain.models.Category
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.domain.repository.WordDao
@@ -12,7 +9,6 @@ import com.lithium.kotlin.dictionary.domain.repository.WordsDataBase
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Scope
-import javax.inject.Singleton
 
 @Scope
 annotation class RepositoryScope

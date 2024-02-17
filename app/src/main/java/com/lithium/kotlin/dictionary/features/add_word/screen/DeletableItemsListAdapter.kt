@@ -12,9 +12,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.lithium.kotlin.dictionary.R
+import javax.inject.Inject
 
 
-class DeletableItemAdapter :
+class DeletableItemAdapter:
     RecyclerView.Adapter<ViewHolder>() {
 
     enum class ViewType{
@@ -101,9 +102,7 @@ class DeletableItemHolder(private val view: View) : ViewHolder(view) {
 }
 
 class AddButtonViewHolder(private val view: View): ViewHolder(view) {
-
-
     fun bind(){
-
+        //callback
     }
 }
