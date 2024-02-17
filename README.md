@@ -5,7 +5,7 @@
 
   <br/>
 
-  <img src= "https://github.com/ComeAYouA/Dictionary/blob/main/preview/Screen_Recording_20240217_113621_Dictionary.gif"/>
+  <img src= "https://github.com/ComeAYouA/Dictionary/blob/main/preview.gif"/>
 
   <hr/>
   <h2>Introduction</h2>
