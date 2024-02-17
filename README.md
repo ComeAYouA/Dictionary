@@ -1,11 +1,7 @@
-<!DOCTYPE html>
+
 <html lang="en">
 
   <h1 align="center">English-Russian dictionary Android application</h1>
-
-  <br/>
-
-  <img src= "https://github.com/ComeAYouA/Dictionary/blob/main/preview/Screen_Recording_20240217_113621_Dictionary.gif"/>
 
   <hr/>
   <h2>Introduction</h2>
@@ -52,3 +48,4 @@
   <img src = "https://github.com/ComeAYouA/Dictionary/blob/main/preview/img.png?raw=true" />
 
 </html>
+![](https://github.com/ComeAYouA/Dictionary/blob/main/preview/Screen_Recording_20240217_113621_Dictionary.gif)
