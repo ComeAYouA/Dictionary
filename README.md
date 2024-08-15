@@ -49,4 +49,7 @@
     <hr/>
 
   <img src = "https://github.com/ComeAYouA/Dictionary/blob/main/preview/img.png?raw=true" />
+
+  <h2>Preview</h2>
+  <img src = "https://github.com/ComeAYouA/Dictionary/blob/main/preview/dictionary_preview.png" />
 </html>
