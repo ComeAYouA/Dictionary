@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TranslateBody(
     @SerializedName("q")
-    var q: String = "",
+    var q: String,
     @SerializedName("source")
     val source: String = "en",
     @SerializedName("target")

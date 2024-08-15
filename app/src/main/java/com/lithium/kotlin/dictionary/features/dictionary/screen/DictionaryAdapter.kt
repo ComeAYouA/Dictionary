@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lithium.kotlin.dictionary.R
-import com.lithium.kotlin.dictionary.databinding.ListItemWordBinding
+import com.lithium.kotlin.dictionary.databinding.ItemWordBinding
 import com.lithium.kotlin.dictionary.domain.models.Word
 import com.lithium.kotlin.dictionary.utils.WordIconUtil
 
@@ -26,9 +26,9 @@ class DictionaryAdapter: RecyclerView.Adapter<WordHolder>(){
     override fun getItemCount(): Int = words.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordHolder {
-        val binding = DataBindingUtil.inflate<ListItemWordBinding>(
+        val binding = DataBindingUtil.inflate<ItemWordBinding>(
             LayoutInflater.from(parent.context),
-            R.layout.list_item_word,
+            R.layout.item_word,
             parent,
             false
         )
@@ -52,7 +52,7 @@ class DictionaryAdapter: RecyclerView.Adapter<WordHolder>(){
     }
 }
 
-class WordHolder (private val binding: ListItemWordBinding): RecyclerView.ViewHolder(binding.root){
+class WordHolder (private val binding: ItemWordBinding): RecyclerView.ViewHolder(binding.root){
 
 
     fun bind(word: Word, onWordEditBlock: (Word) -> Unit){
@@ -71,9 +71,7 @@ class WordHolder (private val binding: ListItemWordBinding): RecyclerView.ViewHo
                 view = binding.wordIcon
             ).resize(174, 174).into(wordIcon)
 
-            wordLayout.isClickable = true
-
-            gearIcon.setOnClickListener {
+            motionLayout.setOnClickListener {
                 onWordEditBlock(word)
             }
         }

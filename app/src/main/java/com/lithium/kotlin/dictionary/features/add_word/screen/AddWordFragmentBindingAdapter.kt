@@ -1,6 +1,7 @@
 package com.lithium.kotlin.dictionary.features.add_word.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -15,109 +16,104 @@ import com.lithium.kotlin.dictionary.features.add_word.di.AddWordScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@AddWordScope
-class AddWordFragmentBindingAdapter @Inject constructor(
-    private val callBacks: AddWordFragment.CallBacks?
-) {
+fun AddWordFragment.setupObservers(
+){
+    lifecycleScope.launch{
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-
-    private var _binding : FragmentWordBinding? = null
-    private val binding : FragmentWordBinding
-        get() = _binding!!
-
-    private val translationsRVAdapter: DeletableItemAdapter by lazy { DeletableItemAdapter() }
-    private val categoriesRVAdapter: DeletableItemAdapter by lazy { DeletableItemAdapter() }
-
-    fun bindingInit(binding: FragmentWordBinding){
-        this._binding = binding
-    }
-
-    fun Fragment.setupObservers(viewModel: AddWordViewModel){
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            launch {
                 viewModel.translation.collect{ translation ->
-                    translationsRVAdapter.apply {
-                        setDeletableItemsList(
-                            mutableSetOf(translation)
-                        )
+                    Log.d("myTag", translation.toString())
+                    translationRVAdapter.apply {
+                        setDeletableItemsList(translation)
+                    }
+                }
+            }
+
+            launch {
+                viewModel.categories.collect{ categories ->
+                    categoriesRVAdapter.apply {
+                        Log.d("myTag", categories.toString())
+
+                        setDeletableItemsList(categories)
                     }
                 }
             }
         }
     }
+}
 
-    fun setupTranslationsRv(){
-        binding.translationRecyclerView.apply {
-            layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
+fun AddWordFragment.setupTranslationsRv(){
+    binding.translationRecyclerView.apply {
+        layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
 
-            adapter = translationsRVAdapter
-        }
-    }
-
-    fun setupCategoriesRv(){
-        binding.categoriesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-
-            adapter = categoriesRVAdapter
-        }
-    }
-
-    fun setupAddButton(viewModel: AddWordViewModel){
-        binding.addButton.setOnClickListener{
-            val _sequence = binding.wordEditText.text.toString()
-            val _translation = translationsRVAdapter.deletableItemsList
-            val _categories = categoriesRVAdapter.deletableItemsList
-
-            viewModel.addWord(
-                Word(
-                    sequence = _sequence,
-                    translation = _translation,
-                    categories = _categories,
-                    photoFilePath = viewModel.iconPath
-                )
-            )
-
-            callBacks?.onAddWordButtonClicked()
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setupWordEditTextListener(viewModel: AddWordViewModel){
-        binding.wordEditText.apply{
-            doAfterTextChanged {
-                if (this.text.toString() == ""){
-                    translationsRVAdapter.setDeletableItemsList(mutableSetOf())
+        adapter = translationRVAdapter.apply {
+            this.setDeletableItemsList(viewModel.translation.value)
+            onDeleteListener = object: DeletableItemAdapter.OnDeleteListener {
+                override fun onItemDeleted(item: String) {
+                    viewModel.removeTranslation(item)
                 }
-                viewModel.translateRequest(this.text.toString())
             }
         }
     }
+}
 
-    fun setupTranslationsEditTextListener(){
-        binding.translationEditText.setOnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                translationsRVAdapter.addCellToList(view.text.toString())
-                view.setText(R.string.empty)
+fun AddWordFragment.setupCategoriesRv(){
+    binding.categoriesRecyclerView.apply {
+        layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
+        adapter = categoriesRVAdapter.apply {
+            this.setDeletableItemsList(viewModel.categories.value)
+
+            onDeleteListener = object: DeletableItemAdapter.OnDeleteListener {
+                override fun onItemDeleted(item: String) {
+                    viewModel.removeCategory(item)
+                }
             }
-            true
         }
     }
+}
 
-    fun setupCategoriesEditTextListener() {
-        binding.categoriesEditText.setOnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                categoriesRVAdapter.addCellToList(view.text.toString())
-                view.setText(R.string.empty)
-            }
-            true
+fun AddWordFragment.setupAddButton(){
+    binding.addButton.setOnClickListener{
+        viewModel.addWord()
+        callBacks?.onAddWordButtonClicked()
+    }
+}
+
+fun AddWordFragment.setupWordEditTextListener(){
+    binding.wordEditText.apply{
+        doAfterTextChanged { text ->
+            val word = text.toString()
+            viewModel.updateWord(word)
         }
+    }
+}
+
+fun AddWordFragment.setupTranslationsEditTextListener(){
+    binding.translationEditText.setOnEditorActionListener { view, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            viewModel.addTranslation(view.text.toString())
+            view.setText(R.string.empty)
+        }
+        true
+    }
+}
+
+fun AddWordFragment.setupCategoriesEditTextListener() {
+    binding.categoriesEditText.setOnEditorActionListener { view, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            viewModel.addCategory(view.text.toString())
+            view.setText(R.string.empty)
+        }
+        true
     }
 }

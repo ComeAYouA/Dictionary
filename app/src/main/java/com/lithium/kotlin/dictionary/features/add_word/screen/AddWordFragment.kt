@@ -32,10 +32,8 @@ class AddWordFragment: Fragment() {
 
     @Inject
     lateinit var  viewModelFactory: AddWordViewModel.Factory
-    @Inject
-    lateinit var fragmentHelper: AddWordFragmentBindingAdapter
 
-    private val viewModel: AddWordViewModel by viewModels { viewModelFactory }
+    val viewModel: AddWordViewModel by viewModels { viewModelFactory }
     private var _binding: FragmentWordBinding? = null
     val binding get() = _binding!!
 
@@ -46,16 +44,22 @@ class AddWordFragment: Fragment() {
         ){ result ->
             if (result.resultCode == Activity.RESULT_OK){
                 result.data?.data?.let { imageUri ->
-                    viewModel.iconPath = getImageFromPath(imageUri)
+                    viewModel.updateIconPath(getImageFromPath(imageUri))
+
                     WordIconUtil.loadCorrectWordIcon(
-                        viewModel.iconPath,
+                        viewModel.iconPath.value,
                         binding.newWordIcon
                     ).into(binding.newWordIcon)
-                }?:{
-                    Log.d("myTag", "Error while getting image")
                 }
             }
         }
+
+    val translationRVAdapter: DeletableItemAdapter by lazy {
+        DeletableItemAdapter()
+    }
+    val categoriesRVAdapter: DeletableItemAdapter by lazy {
+        DeletableItemAdapter()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -67,9 +71,7 @@ class AddWordFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        with(fragmentHelper){
-            this@AddWordFragment.setupObservers(viewModel)
-        }
+        setupObservers()
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,30 +86,25 @@ class AddWordFragment: Fragment() {
             false
         )
 
-        fragmentHelper.bindingInit(binding)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(fragmentHelper){
-            setupTranslationsRv()
-            setupCategoriesRv()
+        setupTranslationsRv()
+        setupCategoriesRv()
 
-            setupAddButton(viewModel)
+        setupAddButton()
 
-            setupWordEditTextListener(viewModel)
-            setupTranslationsEditTextListener()
-            setupCategoriesEditTextListener()
+        setupWordEditTextListener()
+        setupTranslationsEditTextListener()
+        setupCategoriesEditTextListener()
 
-            setupWordIconListener()
-        }
+        setupWordIconListener()
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
         _binding = null
     }

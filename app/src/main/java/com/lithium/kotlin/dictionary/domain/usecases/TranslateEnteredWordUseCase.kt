@@ -9,6 +9,7 @@ import com.lithium.kotlin.dictionary.domain.models.Word
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,28 +23,11 @@ import kotlin.coroutines.CoroutineContext
 class TranslateEnteredWordUseCase @Inject constructor(
     private val translateApi: TranslateApi
 ) {
+    suspend operator fun invoke(word: String): Set<String> =
+        withContext(Dispatchers.IO) { setOf(translateWord(TranslateBody(word))) }
 
-    private val translationRequestsContext = SupervisorJob() + Dispatchers.IO
-    private val translate = MutableStateFlow("")
-
-    suspend operator fun invoke(word: String): String{
-        translationRequestsContext.cancelChildren()
-
-        withContext(translationRequestsContext){
-            delay(3000)
-
-            val body = TranslateBody(q = word)
-            if (isActive) {
-                try{
-                    translate.value = translateWord(body)
-                }catch (e: Exception){
-                    Log.d("request", e.toString())
-                }
-            }
-        }
-
-        return translate.value
-    }
-
-    private suspend fun translateWord(body: TranslateBody): String = translateApi.translate(body).translatedText
+    // API does not working
+    private suspend fun translateWord(body: TranslateBody): String =
+        ""
+        //translateApi.translate(body).translatedText
 }

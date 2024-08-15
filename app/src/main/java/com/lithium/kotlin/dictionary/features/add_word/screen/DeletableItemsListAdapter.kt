@@ -16,93 +16,54 @@ import javax.inject.Inject
 
 
 class DeletableItemAdapter:
-    RecyclerView.Adapter<ViewHolder>() {
+    RecyclerView.Adapter<DeletableItemHolder>()
+{
 
-    enum class ViewType{
-        DeletableItem, AddButton
+    interface OnDeleteListener{
+        fun onItemDeleted(item: String)
     }
 
-    val deletableItemsList: MutableSet<String> = mutableSetOf()
+    var onDeleteListener: OnDeleteListener? = null
 
-    override fun getItemCount(): Int = deletableItemsList.size + 1
+    val deletableItemsList: HashSet<String> = HashSet()
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position in deletableItemsList.indices)
-            ViewType.DeletableItem.ordinal
-        else
-            ViewType.AddButton.ordinal
+    override fun getItemCount(): Int = deletableItemsList.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeletableItemHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(
+                R.layout.list_item_deletable,
+                parent,
+                false
+            )
+        return DeletableItemHolder(view)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        when (viewType){
-            ViewType.DeletableItem.ordinal -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(
-                        R.layout.list_item_deletable,
-                        parent,
-                        false
-                    )
-                return DeletableItemHolder(view)
-            }
-            ViewType.AddButton.ordinal -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(
-                        R.layout.button_add,
-                        parent,
-                        false
-                    )
-                return AddButtonViewHolder(view)
-            }
-            else -> throw Exception("Unknown viewType in DeletableListAdapter")
-        }
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        when (holder){
-            is DeletableItemHolder -> {
-                val word = deletableItemsList.toList()[position]
-                holder.bind(word)
-            }
-            is AddButtonViewHolder -> {
-                holder.bind()
-            }
+    override fun onBindViewHolder(holder: DeletableItemHolder, position: Int) {
+        val item = deletableItemsList.toList()[position]
+        holder.bind(
+            item
+        ) {
+            onDeleteListener?.onItemDeleted(item)
+            this.notifyItemRemoved(position)
         }
     }
     @SuppressLint("NotifyDataSetChanged")
     fun setDeletableItemsList(data: MutableSet<String>) {
-        if (data == mutableSetOf("")) return
         deletableItemsList.clear()
         deletableItemsList.addAll(data)
         notifyDataSetChanged()
     }
-
-    fun addCellToList(input: String){
-        if (!deletableItemsList.contains(input) && input != ""){
-            deletableItemsList.add(input)
-            notifyItemInserted(deletableItemsList.size - 1)
-        }
-    }
 }
 
-class DeletableItemHolder(private val view: View) : ViewHolder(view) {
-    fun bind(translation: String) {
-        val translationTextView = view.findViewById(R.id.translation_text) as TextView
+class DeletableItemHolder(view: View) : ViewHolder(view) {
+
+    private val translationTextView: TextView = view.findViewById(R.id.translation_text)
+    private val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
+
+    fun bind(translation: String, onDelete: () -> Unit) {
         translationTextView.text = translation
 
-        val deleteButton = view.findViewById(R.id.delete_button) as ImageButton
-
-        deleteButton.setOnClickListener {
-            (bindingAdapter as DeletableItemAdapter).apply {
-                deletableItemsList.remove(translation)
-                notifyItemRemoved(position)
-            }
-        }
-
-    }
-}
-
-class AddButtonViewHolder(private val view: View): ViewHolder(view) {
-    fun bind(){
-        //callback
+        deleteButton.setOnClickListener { onDelete() }
     }
 }
